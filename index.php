@@ -8,6 +8,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
 
+use App\Zaptank\Account\Account;
+
 require __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -25,8 +27,17 @@ $app->get('/', function(Request $request, Response $response, array $args) {
 });
 
 $app->post('/account/new', function(Request $request, Response $response, array $args) {
-    $params = $_POST;
-    $response->getBody()->write(json_encode($params));
+
+    $email = $_POST['email'];
+    $password = strtoupper(md5($_POST['password']));
+    $phone = $_POST['phone'];
+    $ReferenceLocation = $_POST['ReferenceLocation'];
+
+    $account = new Account;
+
+    $account->register($email, $password, $phone, $ReferenceLocation);
+
+    $response->getBody()->write(json_encode(true));
     return $response->withHeader('Content-Type', 'application/json');
 });
 
