@@ -10,22 +10,24 @@ use Slim\Factory\AppFactory;
 
 require __DIR__ . '/vendor/autoload.php';
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
+
 $app = AppFactory::create();
 
-$app->setBasePath('/zaptank');
+$app->addErrorMiddleware(false, true, true);
+
+$app->setBasePath('/zaptank_api');
 
 $app->get('/', function(Request $request, Response $response, array $args) {
-    $response->getBody()->write("Hello world!");
+    $response->getBody()->write('Hello, world!');
     return $response;
 });
 
-$app->post('/fruits', function(Request $request, Response $response, array $args) {
-    $fruit = [
-        'nome' => 'Laranja',
-        'cor'  => 'Laranja'
-    ];
-    $response->getBody()->write(json_encode($fruit));
-    return $response->withHeader('Content-type', 'application/json');
+$app->post('/account/new', function(Request $request, Response $response, array $args) {
+    $params = $_POST;
+    $response->getBody()->write(json_encode($params));
+    return $response->withHeader('Content-Type', 'application/json');
 });
 
 $app->run();
