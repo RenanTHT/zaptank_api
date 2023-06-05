@@ -29,7 +29,7 @@ $app->get('/', function(Request $request, Response $response, array $args) {
 $app->post('/account/new', function(Request $request, Response $response, array $args) {
 
     $email = $_POST['email'];
-    $password = strtoupper(md5($_POST['password']));
+    $password = $_POST['password'];
     $phone = $_POST['phone'];
     $ReferenceLocation = $_POST['ReferenceLocation'];
 
