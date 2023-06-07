@@ -7,8 +7,9 @@ error_reporting(E_ALL);
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Slim\Factory\AppFactory;
+use Slim\Exception\HttpNotFoundException;
 
-use App\Zaptank\Account\Account;
+use App\Zaptank\Controllers\AccountController;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -17,28 +18,18 @@ $dotenv->safeLoad();
 
 $app = AppFactory::create();
 
-$app->addErrorMiddleware(false, true, true);
+// $app->addErrorMiddleware(false, true, true);
 
 $app->setBasePath('/zaptank_api');
 
-$app->get('/', function(Request $request, Response $response, array $args) {
-    $response->getBody()->write('Hello, world!');
-    return $response;
+$app->add(function ($request, $handler) {
+    $response = $handler->handle($request);
+    return $response
+        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:80/')
+        ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+        ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->post('/account/new', function(Request $request, Response $response, array $args) {
-
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    $phone = $_POST['phone'];
-    $ReferenceLocation = $_POST['ReferenceLocation'];
-
-    $account = new Account;
-
-    $account->register($email, $password, $phone, $ReferenceLocation);
-
-    $response->getBody()->write(json_encode(true));
-    return $response->withHeader('Content-Type', 'application/json');
-});
+$app->post('/account/new', [AccountController::class, 'new']);
 
 $app->run();
