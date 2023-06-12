@@ -31,5 +31,7 @@ $app->add(function ($request, $handler) {
 });
 
 $app->post('/account/new', [AccountController::class, 'new']);
+$app->get('/account/email/check', [AccountController::class, 'checkEmail']);
+$app->get('/account/phone/check', [AccountController::class, 'checkPhone']);
 
 $app->run();
