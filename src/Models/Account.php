@@ -7,19 +7,18 @@ use \PDO;
 
 class Account extends Model {
 
-    public function create ($email, $password, $phone, $ReferenceLocation) {
+    public function create ($email, $password, $phone, $ReferenceLocation) :void {
 
         $conn = $this->db->get();
 
         $query = $conn->query("EXEC {$_ENV['BASE_SERVER']}.dbo.Webshop_Register @ApplicationName=N'DanDanTang',@password=N'{$password}',@email='{$email}',@passtwo = '{$password}',@error = 0, @VerifiedEmail = 0, @phone=N'{$phone}',@Reference=N'{$ReferenceLocation}'");
-        return 'store';
     }
 
 
     /**
      * Seleciona dados pelo e-mail
      */
-    public function selectByEmail(string $email) {
+    public function selectByEmail(string $email) :array {
 
         $conn = $this->db->get();
 
@@ -33,7 +32,7 @@ class Account extends Model {
     /**
      * Seleciona dados pelo telefone
      */
-    public function selectByPhone(string $phone) {
+    public function selectByPhone(string $phone) :array {
 
         $conn = $this->db->get();
         

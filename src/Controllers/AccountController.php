@@ -10,7 +10,7 @@ use App\Zaptank\Models\Account;
 class AccountController {
 
     /**
-     * Cadastra dados no database
+     * Cadastra nova conta
      */
     public function new(Request $request, Response $response) {
 
@@ -23,23 +23,27 @@ class AccountController {
         
         $result = $account->create($email, $password, $phone, $ReferenceLocation);
     
-        $response->getBody()->write($result);
+        $response->getBody()->write('cadastro');
         return $response->withHeader('Content-Type', 'application/json');
     }
 
-
+   
     /**
      * Valida e-mail informado
      */
     public function checkEmail(Request $request, Response $response, array $args = []) {
 
-        $email = $_GET['email'];
+        $email = $args['email'];
 
         $account = new Account;
 
-        $emailExists = empty($account->selectByEmail($email)) ? true : false;
+        if(empty($account->selectByEmail($email))) {
+            $body = ['response' => true];
+        } else {
+            $body = ['response' => false];
+        }
 
-        $response->getBody()->write(json_encode($emailExists));
+        $response->getBody()->write(json_encode($body));
 
         return $response->withHeader('Content-Type', 'application/json');
     }
@@ -50,13 +54,17 @@ class AccountController {
      */
     public function checkPhone(Request $request, Response $response, array $args = []) {
 
-        $phone = $_GET['phone'];
+        $phone = $args['phone'];
 
         $account = new Account;
 
-        $phoneExists = empty($account->selectByPhone($phone)) ? true : false;
+        if(empty($account->selectByPhone($phone))) {
+            $body = ['response' => true];
+        } else {
+            $body = ['response' => false];
+        }
 
-        $response->getBody()->write(json_encode($phoneExists));
+        $response->getBody()->write(json_encode($body));
 
         return $response->withHeader('Content-Type', 'application/json');
     }
