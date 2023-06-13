@@ -18,11 +18,11 @@ class Account extends Model {
     /**
      * Seleciona dados pelo e-mail
      */
-    public function selectByEmail(string $email) :array {
+    public function selectByEmail(string $email) {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
+        $stmt = $conn->prepare("SELECT UserId, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -32,11 +32,11 @@ class Account extends Model {
     /**
      * Seleciona dados pelo telefone
      */
-    public function selectByPhone(string $phone) :array {
+    public function selectByPhone(string $phone) {
 
         $conn = $this->db->get();
         
-        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
+        $stmt = $conn->prepare("SELECT UserId, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
 		$stmt->bindParam(':phone', $phone);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);       

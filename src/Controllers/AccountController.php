@@ -21,9 +21,13 @@ class AccountController {
     
         $account = new Account;
         
-        $result = $account->create($email, $password, $phone, $ReferenceLocation);
-    
-        $response->getBody()->write('cadastro');
+        $account->create($email, $password, $phone, $ReferenceLocation);
+
+        $user = json_encode(
+            $account->selectByEmail($email)
+        );
+
+        $response->getBody()->write($user);
         return $response->withHeader('Content-Type', 'application/json');
     }
 
