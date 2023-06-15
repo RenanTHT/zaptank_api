@@ -16,7 +16,24 @@ class Account extends Model {
 
 
     /**
-     * Seleciona dados pelo e-mail
+     * Consulta usuário pelo email e senha
+     */
+    public function selectByUserAndPassword(string $email, $password) :array {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
+        $stmt->bindParam(':email', $email);
+        $stmt->bindParam(':password', $password);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return (!empty($result)) ? $result: [];
+    }
+
+
+    /**
+     * Consulta usuário pelo e-mail
      */
     public function selectByEmail(string $email) {
 
@@ -30,7 +47,7 @@ class Account extends Model {
 
 
     /**
-     * Seleciona dados pelo telefone
+     * Consulta usuário pelo telefone
      */
     public function selectByPhone(string $phone) {
 

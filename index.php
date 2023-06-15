@@ -10,6 +10,7 @@ use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
 
 use App\Zaptank\Controllers\AccountController;
+use App\Zaptank\Controllers\AuthController;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -30,8 +31,9 @@ $app->add(function ($request, $handler) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->post('/account/new', [AccountController::class, 'new']);
 $app->get('/account/email/check/{email}', [AccountController::class, 'checkEmail']);
 $app->get('/account/phone/check/{phone}', [AccountController::class, 'checkPhone']);
+$app->post('/account/new', [AccountController::class, 'new']);
+$app->post('/auth/login', [AuthController::class, 'make']);
 
 $app->run();
