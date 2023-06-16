@@ -12,7 +12,7 @@ class AuthController {
     public function make(Request $request, Response $response) {
 
         $email = $_POST['email'];
-        $password = strtoupper(md5($_POST['password']));
+        $password = $_POST['password'];
 
         $account = new Account;
 
