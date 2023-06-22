@@ -12,7 +12,7 @@ class AuthController {
     public function make(Request $request, Response $response) {
 
         $email = $_POST['email'];
-        $password = $_POST['password'];
+        $password =  strtoupper(md5($_POST['password']));
 
         $account = new Account;
 
@@ -43,7 +43,9 @@ class AuthController {
                         'message' => 'Autenticação bem-sucedida',
                         'data' => [
                             'userId' => $user['UserId'],
-                            'telefone' => $user['Telefone'],
+                            'email' => $email,
+                            'password' => $password,
+                            'phone' => $user['Telefone'],
                             'token' => md5(time())
                         ]
                     ];                
