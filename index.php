@@ -23,10 +23,10 @@ $app = AppFactory::create();
 
 $app->setBasePath('/zaptank_api');
 
-$app->add(function ($request, $handler) {
+$app->add(function ($request, $handler) use ($app) {
     $response = $handler->handle($request);
     return $response
-        ->withHeader('Access-Control-Allow-Origin', 'http://localhost:80/')
+        ->withHeader('Access-Control-Allow-Origin', 'http://localhost')
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
