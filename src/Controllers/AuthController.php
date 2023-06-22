@@ -46,7 +46,7 @@ class AuthController {
                             'email' => $email,
                             'password' => $password,
                             'phone' => $user['Telefone'],
-                            'token' => md5(time())
+                            'jwt_hash' => md5(time())
                         ]
                     ];                
                 }
