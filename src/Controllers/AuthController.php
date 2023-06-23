@@ -6,6 +6,7 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Zaptank\Models\Account;
+use App\Zaptank\Services\Token;
 
 class AuthController {
 
@@ -36,17 +37,23 @@ class AuthController {
                     ];
                 } else {
 
+                    $uid = $user['UserId'];
+                    $phone = $user['Telefone'];
+
                     // passo 4 - gerar token
+                    $token = new Token;
+
+                    $jwt_hash = $token->generateAuthenticationToken($uid, $email, $phone);
 
                     $body = [
                         'success' => true,
                         'message' => 'Autenticação bem-sucedida',
                         'data' => [
-                            'userId' => $user['UserId'],
+                            'userId' => $uid,
                             'email' => $email,
                             'password' => $password,
-                            'phone' => $user['Telefone'],
-                            'jwt_hash' => md5(time())
+                            'phone' => $phone,
+                            'jwt_hash' => $jwt_hash
                         ]
                     ];                
                 }
