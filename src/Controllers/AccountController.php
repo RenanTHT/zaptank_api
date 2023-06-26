@@ -20,56 +20,41 @@ class AccountController {
         $ReferenceLocation = $_POST['ReferenceLocation'];
     
         $account = new Account;
-        
-        $account->create($email, $password, $phone, $ReferenceLocation);
 
-        $user = json_encode(
-            $account->selectByEmail($email)
-        );
-
-        $response->getBody()->write($user);
-        return $response->withHeader('Content-Type', 'application/json');
-    }
-
-   
-    /**
-     * Valida e-mail informado
-     */
-    public function checkEmail(Request $request, Response $response, array $args = []) {
-
-        $email = $args['email'];
-
-        $account = new Account;
-
-        if(empty($account->selectByEmail($email))) {
-            $body = ['response' => true];
+        if(!empty($account->selectByEmail($email))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'e-mail em uso.',
+                'status_code' => 'email_exists'
+            ]);
+        } else if(!empty($account->selectByPhone($phone))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'telefone em uso.',
+                'status_code' => 'phone_exists'
+            ]);
         } else {
-            $body = ['response' => false];
+
+            $account->create($email, $password, $phone, $ReferenceLocation);
+            $user = $account->selectByEmail($email);
+            
+            if(is_array($user) && !empty($user)) {
+                $body = json_encode([
+                    'success' => true,
+                    'message' => 'usuário foi cadastrado com êxito.',
+                    'status_code' => 'user_registered',
+                    'data' => $user
+                ]);
+            } else {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'houve um erro interno, o usuário não foi cadastrado.',
+                    'status_code' => 'internal_error'
+                ]);
+            }
         }
 
-        $response->getBody()->write(json_encode($body));
-
-        return $response->withHeader('Content-Type', 'application/json');
-    }
-
-
-    /**
-     * Valida telefone informado
-     */
-    public function checkPhone(Request $request, Response $response, array $args = []) {
-
-        $phone = $args['phone'];
-
-        $account = new Account;
-
-        if(empty($account->selectByPhone($phone))) {
-            $body = ['response' => true];
-        } else {
-            $body = ['response' => false];
-        }
-
-        $response->getBody()->write(json_encode($body));
-
+        $response->getBody()->write($body);
         return $response->withHeader('Content-Type', 'application/json');
     }
 }
