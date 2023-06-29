@@ -13,7 +13,7 @@ class AuthController {
     public function make(Request $request, Response $response) {
 
         $email = $_POST['email'];
-        $password =  strtoupper(md5($_POST['password']));
+        $password = strtoupper(md5($_POST['password']));
 
         $account = new Account;
 
@@ -40,10 +40,13 @@ class AuthController {
                     $uid = $user['UserId'];
                     $phone = $user['Telefone'];
 
-                    // passo 4 - gerar token
                     $token = new Token;
 
-                    $jwt_hash = $token->generateAuthenticationToken($uid, $email, $phone);
+                    $jwt_hash = $token->generateAuthenticationToken($payload = [
+                        'sub' => $uid,
+                        'email' => $email,
+                        'phone' => $phone
+                    ]);
 
                     $body = [
                         'success' => true,

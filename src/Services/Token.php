@@ -7,17 +7,15 @@ use Firebase\JWT\Key;
 
 class Token {
 
-    public function generateAuthenticationToken(int $sub, string $email, string $phone) :string {
+    private $private_key;
 
-        $privateKey = $_ENV['PRIVATE_KEY'];
+    public function __construct() {
+        $this->private_key = $_ENV['PRIVATE_KEY'];
+    }
 
-        $payload = [
-            'sub' => $sub,
-            'email' => $email,
-            'phone' => $phone
-        ];
+    public function generateAuthenticationToken(array $payload) :string {
 
-        $jwt = JWT::encode($payload, $privateKey, 'HS256'); 
+        $jwt = JWT::encode($payload, $this->private_key, 'HS256'); 
 
         return $jwt;
     }
