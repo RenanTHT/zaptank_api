@@ -7,7 +7,7 @@ use \PDO;
 
 class Account extends Model {
 
-    public function create ($email, $password, $phone, $ReferenceLocation) :void {
+    public function create($email, $password, $phone, $ReferenceLocation) :void {
 
         $conn = $this->db->get();
 
@@ -16,8 +16,20 @@ class Account extends Model {
 
 
     /**
-     * Consulta usuário pelo email e senha
+     * Criar registro na tabela de ativar email
      */
+    public function insertEmailActivationToken(int $userId, $token, string $data) {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, Date) VALUES(:userID, :token, :Date)");
+        $stmt->bindParam(':userID', $userId);
+        $stmt->bindParam(':token', $token);
+        $stmt->bindParam(':Date', $data);
+        $stmt->execute();        
+    }
+
+
     public function selectByUserAndPassword(string $email, $password) :array {
         
         $conn = $this->db->get();
@@ -32,9 +44,6 @@ class Account extends Model {
     }
 
 
-    /**
-     * Consulta usuário pelo e-mail
-     */
     public function selectByEmail(string $email) {
 
         $conn = $this->db->get();
@@ -46,9 +55,6 @@ class Account extends Model {
     }
 
 
-    /**
-     * Consulta usuário pelo telefone
-     */
     public function selectByPhone(string $phone) {
 
         $conn = $this->db->get();
