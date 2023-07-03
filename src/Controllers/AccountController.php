@@ -53,7 +53,7 @@ class AccountController {
 
                 $token = new Token;
 
-                $jwt_hash = $token->generateAuthenticationToken($payload = [
+                $jwt_authentication_hash = $token->generateAuthenticationToken($payload = [
                     'sub' => $uid,
                     'email' => $email,
                     'phone' => $phone
@@ -83,7 +83,7 @@ class AccountController {
                         'email' => $email,
                         'password' => $password,
                         'phone' => $phone,
-                        'jwt_hash' => $jwt_hash
+                        'jwt_hash' => $jwt_authentication_hash
                     ]
                 ]);
             } else {
