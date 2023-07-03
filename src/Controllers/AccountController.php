@@ -83,7 +83,7 @@ class AccountController {
                         'email' => $email,
                         'password' => $password,
                         'phone' => $phone,
-                        'jwt_hash' => $jwt_authentication_hash
+                        'jwt_authentication_hash' => $jwt_authentication_hash
                     ]
                 ]);
             } else {
