@@ -22,7 +22,7 @@ class AccountController {
     
         $account = new Account;
         
-        if(empty(trim($_POST['email'])) || empty(trim($_POST['password'])) || empty(trim($_POST['phone']))) {
+        if(empty(trim($email)) || empty(trim($_POST['password'])) || empty(trim($phone))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'preencha todos os campos.',
