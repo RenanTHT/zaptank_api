@@ -62,7 +62,7 @@ class AccountController {
                 $activation_token = md5(time());
                 $EncMail = $email;
 
-                $account->insertEmailActivationToken($uid, $activation_token, $data = date('Y-m-d h:i:s'));
+                $account->insertEmailActivationToken($uid, $activation_token, $data = $data = date('Y/m/d H:i'));
 
                 $emailService = new Email;
                 
