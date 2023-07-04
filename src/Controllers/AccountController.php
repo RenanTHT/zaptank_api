@@ -11,9 +11,6 @@ use App\Zaptank\Services\Email;
 
 class AccountController {
 
-    /**
-     * Cadastra nova conta
-     */
     public function new(Request $request, Response $response) {
 
         $email             = $_POST['email'];
@@ -110,5 +107,14 @@ class AccountController {
 
         $response->getBody()->write($body);
         return $response->withHeader('Content-Type', 'application/json');
+    }
+
+
+    public function changeEmail(Request $request, Response $response) {
+
+        $phone = $_POST['phone'];
+        
+        $response->getBody()->write(json_encode($phone));
+        return $response->withHeader('Content-type', 'application/json');
     }
 }

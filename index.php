@@ -31,8 +31,7 @@ $app->add(function ($request, $handler) use ($app) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->get('/account/email/check/{email}', [AccountController::class, 'checkEmail']);
-$app->get('/account/phone/check/{phone}', [AccountController::class, 'checkPhone']);
+$app->post('/account/phone/change', [AccountController::class, 'changeEmail']);
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
 
