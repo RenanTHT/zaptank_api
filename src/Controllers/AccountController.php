@@ -114,7 +114,7 @@ class AccountController {
 
         $phone = $_POST['phone'];
         
-        $response->getBody()->write(json_encode($phone));
+        $response->getBody()->write(json_encode('change'));
         return $response->withHeader('Content-type', 'application/json');
     }
 }
