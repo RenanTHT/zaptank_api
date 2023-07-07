@@ -10,9 +10,9 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
 
-use App\Zaptank\Controllers\AccountController;
 use App\Zaptank\Controllers\AuthController;
-use App\Zaptank\Services\Token;
+use App\Zaptank\Controllers\Account\AccountController;
+use App\Zaptank\Controllers\Account\ConfigController;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -33,31 +33,7 @@ $app->add(function ($request, $handler) use ($app) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$middleware = function(Request $request, RequestHandler $handler) {
-    
-    $response = $handler->handle($request);
-
-    $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
-    $existingContent = (string) $response->getBody();
-
-    $token = new Token;
-    $decode = $token->validate($jwt);
-
-    $response = new Slim\Psr7\Response();
-    $response->getBody()->write(json_encode([
-        [
-            'Middleware' => [
-                'token' =>  $jwt,
-                'decode' => $decode
-            ],
-            'Route' => $existingContent
-        ]
-    ]));
-
-    return $response;
-};
-
-$app->post('/account/phone/change', [AccountController::class, 'changeEmail'])->add($middleware);
+$app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
