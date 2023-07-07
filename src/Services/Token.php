@@ -30,9 +30,9 @@ class Token {
             $decoded = JWT::decode($jwt, new Key($this->private_key, 'HS256'));
             $decoded_array = (array) $decoded;
     
-            return "Decode:\n" . print_r($decoded_array, true) . "\n";        
+            return $decoded_array;        
         } catch (SignatureInvalidException $e) {
-            echo "Token inválido: " . $e->getMessage();
+            return $e->getMessage();
         }
     }    
 }
