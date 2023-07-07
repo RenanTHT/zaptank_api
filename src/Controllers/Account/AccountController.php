@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zaptank\Controllers;
+namespace App\Zaptank\Controllers\Account;
 
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -107,14 +107,5 @@ class AccountController {
 
         $response->getBody()->write($body);
         return $response->withHeader('Content-Type', 'application/json');
-    }
-
-
-    public function changeEmail(Request $request, Response $response) {
-
-        $phone = $_POST['phone'];
-        
-        $response->getBody()->write(json_encode('change'));
-        return $response->withHeader('Content-type', 'application/json');
     }
 }
