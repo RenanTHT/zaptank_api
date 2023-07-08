@@ -64,4 +64,16 @@ class Account extends Model {
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);       
     }
+
+
+    public function updatePhone($userId, $phone) :bool {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE Db_Center.dbo.Mem_UserInfo SET Telefone = :phone WHERE UserID= :id");
+        $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+        return ($stmt->rowCount() > 0) ? true: false;
+    }
 }

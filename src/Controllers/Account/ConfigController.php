@@ -43,11 +43,13 @@ class ConfigController {
                     'status_code' => 'phone_exists'                
                 ]);                
             } else {
+                $account->updatePhone($uid, $phone);                
+
                 $body = json_encode([
                     'success' => true,
                     'message' => 'Telefone alterado com sucesso!',
                     'status_code' => 'changed'                
-                ]);                         
+                ]);                 
             }
         }
 
@@ -58,7 +60,6 @@ class ConfigController {
         */
         
         $response->getBody()->write($body);
-
         return $response;
     }
 }
