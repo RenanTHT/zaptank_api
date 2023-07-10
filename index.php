@@ -34,7 +34,7 @@ $app->add(function ($request, $handler) use ($app) {
 });
 
 $app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid);
-
+$app->post('/account/password/change', [ConfigController::class, 'changePassword']);
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
 

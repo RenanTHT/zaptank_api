@@ -62,4 +62,10 @@ class ConfigController {
         $response->getBody()->write($body);
         return $response;
     }
+
+
+    public function changePassword(Request $request, Response $response) : Response {
+        $response->getBody()->write('change password');
+        return $response;
+    }
 }
