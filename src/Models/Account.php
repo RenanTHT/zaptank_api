@@ -15,9 +15,6 @@ class Account extends Model {
     }
 
 
-    /**
-     * Criar registro na tabela de ativar email
-     */
     public function insertEmailActivationToken(int $userId, $token, string $data) {
 
         $conn = $this->db->get();
@@ -34,7 +31,7 @@ class Account extends Model {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, IsBanned, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
@@ -48,7 +45,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -59,7 +56,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
         
-        $stmt = $conn->prepare("SELECT UserId, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
 		$stmt->bindParam(':phone', $phone);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);       
@@ -70,8 +67,20 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("UPDATE Db_Center.dbo.Mem_UserInfo SET Telefone = :phone WHERE UserID= :id");
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET Telefone = :phone WHERE UserID= :id");
         $stmt->bindParam(':phone', $phone);
+        $stmt->bindParam(':id', $userId);
+        $stmt->execute();
+        return ($stmt->rowCount() > 0) ? true: false;
+    }
+    
+    
+    public function updatePassword($userId, $newPassword) :bool {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET Password = :password WHERE UserID= :id");
+        $stmt->bindParam(':password', $newPassword);
         $stmt->bindParam(':id', $userId);
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? true: false;

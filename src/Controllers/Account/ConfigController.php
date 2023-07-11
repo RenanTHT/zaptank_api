@@ -48,7 +48,7 @@ class ConfigController {
                 $body = json_encode([
                     'success' => true,
                     'message' => 'Telefone alterado com sucesso!',
-                    'status_code' => 'changed'                
+                    'status_code' => 'phone_changed'                
                 ]);                 
             }
         }
@@ -65,7 +65,70 @@ class ConfigController {
 
 
     public function changePassword(Request $request, Response $response) : Response {
-        $response->getBody()->write('change password');
+
+        $oldpass = md5($_POST['oldpass']);
+        $newpass = md5($_POST['newpass']);
+
+        if(empty($oldpass)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Você não informou a senha antiga.',
+                'status_code' => 'empty_oldpass'
+            ]);
+        } else if(empty($newpass)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Você não informou a nova senha.',
+                'status_code' => 'empty_oldpass'
+            ]);            
+        } else {
+            $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+            $token = new Token;
+            $payload = $token->validate($jwt);
+    
+            $uid = $payload['sub'];
+            $email = $payload['email'];
+
+            $account = new Account;
+            
+            if(empty($account->selectByUserAndPassword($email, $oldpass))) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'Senha antiga incorreta, confira os dados digitados...',
+                    'status_code' => 'incorrect_old_password'
+                ]);                
+            } else {
+                $user = $account->selectByEmail($email);
+                
+                if($user['VerifiedEmail'] == false) {
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => 'Por segurança, para alterar sua senha você deve verificar seu e-mail.',
+                        'status_code' => 'unverified_email'
+                    ]);
+                } else if(!empty($account->selectByUserAndPassword($email, $newpass))) {   
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => 'Nova senha digitada é a mesma que a antiga...',
+                        'status_code' => 'unverified_email'
+                    ]);                
+                } else {
+                    // - Atualiza nova senha banco
+                    $account->updatePassword($uid, $newpass);
+
+                    // - Envia e-mail notificação
+
+                    $body = json_encode([
+                        'success' => true,
+                        'message' => 'Senha alterada com sucesso, realize o login novamente.',
+                        'status_code' => 'password_changed'
+                    ]);               
+                }
+            }
+        }
+        
+        $response->getBody()->write($body);
         return $response;
     }
 }

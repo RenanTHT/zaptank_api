@@ -14,6 +14,8 @@ use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\ConfigController;
 
+use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
+
 require __DIR__ . '/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
@@ -33,8 +35,8 @@ $app->add(function ($request, $handler) use ($app) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid);
-$app->post('/account/password/change', [ConfigController::class, 'changePassword']);
+$app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new ensureJwtAuthTokenIsValid);
+$app->post('/account/password/change', [ConfigController::class, 'changePassword'])->add(new ensureJwtAuthTokenIsValid);
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
 
