@@ -148,4 +148,14 @@ class ConfigController {
         $response->getBody()->write($body);
         return $response;
     }
+
+    public function changeEmailNotVerified(Request $request, Request $response) :Response {
+        $response->getBody()->write('changeEmailNotVerified');
+        return $response;
+    }    
+    
+    public function changeEmail(Request $request, Request $response) :Response {
+        $response->getBody()->write('changeEmail');
+        return $response;
+    }
 }
