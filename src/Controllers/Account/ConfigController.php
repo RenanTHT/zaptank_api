@@ -150,7 +150,56 @@ class ConfigController {
     }
 
     public function changeEmailNotVerified(Request $request, Request $response) :Response {
-        $response->getBody()->write('changeEmailNotVerified');
+        $current_email = $_POST['current_email'];
+        $new_email = $_POST['new_email'];
+    
+        if(empty($current_email) || empty($new_email)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Você não preencheu todos os campos solicitados.',
+                'status_code' => 'empty_fields'
+            ]);
+        } else {
+            $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+            $token = new Token;
+            $payload = $token->validate($jwt);
+    
+            $account_email = $payload['email'];
+
+            $account = new Account;
+            $user = $account->selectByEmail($current_email);
+
+            if(empty($user) || $current_email != $account_email) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'E-mail atual informado é inválido.',
+                    'status_code' => 'invalid_current_email'
+                ]); 
+            } else if($user['VerifiedEmail'] == true) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'Para alterar o e-mail de uma conta verificada faça login na sua conta e procure por central de configurações.',
+                    'status_code' => 'email_already_verified'
+                ]); 
+            } else if(!empty($account->selectByEmail($new_email))) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'Já existe alguém com esse endereço de e-mail.',
+                    'status_code' => 'email_in_use'
+                ]); 
+            } else {
+                $account->updateEmail($current_email, $new_email);
+                
+                $body = json_encode([
+                    'success' => true,
+                    'message' => 'E-mail alterado com sucesso, realize o login novamente.',
+                    'status_code' => 'email_changed'
+                ]);
+            }
+        }
+
+        $response->getBody()->write($body);
         return $response;
     }    
     

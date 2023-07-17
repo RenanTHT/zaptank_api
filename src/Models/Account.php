@@ -85,4 +85,23 @@ class Account extends Model {
         $stmt->execute();
         return ($stmt->rowCount() > 0) ? true: false;
     }
+
+
+    public function updateEmail($current_email, $new_email) {
+
+        $conn = $this->db->get();
+
+        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET Email = '$new_email' WHERE Email = '$current_email'");
+        $query = $conn->query("SELECT * FROM Db_Center.dbo.Server_List");
+        $result = $query->fetchAll();
+        foreach ($result as $infoBase) {
+            $BaseUser = $infoBase['BaseUser'];
+            $conn->query("UPDATE $BaseUser.dbo.Sys_Users_Detail SET UserName = '$new_email' WHERE UserName = '$email'");
+        }
+        $conn->query("UPDATE Db_Center.dbo.Bag_Goods SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE Db_Center.dbo.Vip_Data SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE Db_Center.dbo.User_Award_GiftCode SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET BadMail='0' WHERE Email='$current_email'");
+        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET VerifiedEmail='0' WHERE Email='$current_email'");
+    }
 }
