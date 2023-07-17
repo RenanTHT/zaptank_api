@@ -149,7 +149,8 @@ class ConfigController {
         return $response;
     }
 
-    public function changeEmailNotVerified(Request $request, Request $response) :Response {
+    public function changeEmailNotVerified(Request $request, Response $response) :Response {
+        
         $current_email = $_POST['current_email'];
         $new_email = $_POST['new_email'];
     

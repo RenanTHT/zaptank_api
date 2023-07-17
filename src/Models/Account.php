@@ -96,7 +96,7 @@ class Account extends Model {
         $result = $query->fetchAll();
         foreach ($result as $infoBase) {
             $BaseUser = $infoBase['BaseUser'];
-            $conn->query("UPDATE $BaseUser.dbo.Sys_Users_Detail SET UserName = '$new_email' WHERE UserName = '$email'");
+            $conn->query("UPDATE $BaseUser.dbo.Sys_Users_Detail SET UserName = '$new_email' WHERE UserName = '$current_email'");
         }
         $conn->query("UPDATE Db_Center.dbo.Bag_Goods SET UserName = '$new_email' WHERE UserName='$current_email'");
         $conn->query("UPDATE Db_Center.dbo.Vip_Data SET UserName = '$new_email' WHERE UserName='$current_email'");
