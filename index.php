@@ -38,6 +38,7 @@ $app->add(function ($request, $handler) use ($app) {
 $app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new ensureJwtAuthTokenIsValid);
 $app->post('/account/password/change', [ConfigController::class, 'changePassword'])->add(new ensureJwtAuthTokenIsValid);
 $app->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified'])->add(new ensureJwtAuthTokenIsValid);
+$app->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest'])->add(new ensureJwtAuthTokenIsValid);
 $app->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new ensureJwtAuthTokenIsValid);
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);

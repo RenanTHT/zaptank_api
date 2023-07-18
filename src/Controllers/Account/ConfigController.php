@@ -204,6 +204,15 @@ class ConfigController {
         return $response;
     }    
     
+    public function saveEmailChangeRequest(Request $request, Response $response) :Response {
+        $body = json_encode([
+            'success' => true,
+            'message' => 'Um e-mail para alterar o e-mail foi enviado.'
+        ]);
+        $response->getBody()->write($body);
+        return $response;
+    }
+
     public function changeEmail(Request $request, Response $response) :Response {
         $response->getBody()->write('changeEmail');
         return $response;
