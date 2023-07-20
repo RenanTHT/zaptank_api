@@ -275,12 +275,14 @@ class ConfigController {
                         $body = json_encode([
                             'success' => true,
                             'message' => 'Email enviado com sucesso, caso não encontre nenhum email verifique o SPAM.',
+                            'email_sent' => true,
                             'status_code' => 'email_sent'
                         ]);                    
                     } else {
                         $body = json_encode([
                             'success' => false,
                             'message' => 'Seu e-mail não foi enviado, estamos com uma demanda de e-mails acima do normal. Nossos engenheiros foram notificados e estão resolvendo o mais rápido possível.',
+                            'email_sent' => false,
                             'status_code' => 'email_not_sent'
                         ]);                
                     }
