@@ -232,31 +232,24 @@ class ConfigController {
             ]);
         } else {
             $emailModel = new EmailModel;
-
             $emailChangeRequest = $emailModel->selectEmailChangeRequest($uid);
 
-            if(!empty($emailChangeRequest)) {
+            $start_date = (!empty($emailChangeRequest)) ?  new \DateTime(date('Y-m-d H:i:s', strtotime($emailChangeRequest['Date']))) : new \DateTime(date('Y-m-d H:i:s'));
 
-                $emailChangeRequestDate = $emailChangeRequest['Date'];
-                
-                $start_date = new DateTime($emailChangeRequestDate);
-                $since_start = $start_date->diff(
-                    new DateTime(date('Y-m-d H:i:s'))
-                );
-                
-                if($since_start->i < 2) {
-                    $lastEmailChangeRequest = date('H:i:s', strtotime($emailChangeRequestDate));
+            $since_start = $start_date->diff(new \DateTime(date('Y-m-d H:i:s')));
 
-                    $body = json_encode([
-                        'success' => false,
-                        'message' => "Aguarde 2 minutos para enviar outro e-mail, você enviou um e-mail em {$lastEmailChangeRequest}",
-                        'status_code' => 'many_attempts'
-                    ]);
-                }
+            if($since_start->i < 2) {
+                $lastEmailChangeRequest = date('H:i:s', strtotime($emailChangeRequest['Date']));
+
+                $body = json_encode([
+                    'success' => false,
+                    'message' => "Aguarde 2 minutos para enviar outro e-mail, você enviou um e-mail em {$lastEmailChangeRequest}",
+                    'status_code' => 'many_attempts'
+                ]);
             } else {
                 $account = new Account;
                 $user = $account->selectByEmail($email);
-
+    
                 if($user['VerifiedEmail'] == 0) {
                     $body = json_encode([
                         'success' => false,
@@ -269,7 +262,7 @@ class ConfigController {
                     $token = md5(time());
                     
                     $emailModel->insertEmailChangeRequest($uid, $token, $date = date('d/m/Y H:i:s'));
-
+    
                     $emailService = new Email;
                     $email_sent = $emailService->send(
                         $subject = "Alerta de segurança: {$email}, verifique o acesso à sua conta do ZapTank",
@@ -277,7 +270,7 @@ class ConfigController {
                         $altBody = 'Troca de e-mail',
                         $email
                     );
-
+    
                     if($email_sent) {
                         $body = json_encode([
                             'success' => true,
@@ -291,7 +284,7 @@ class ConfigController {
                             'status_code' => 'email_not_sent'
                         ]);                
                     }
-                }
+                }            
             }
         }
 
