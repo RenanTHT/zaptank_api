@@ -7,6 +7,8 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Slim\Psr7\Response;
 
 use App\Zaptank\Models\Account;
+use App\Zaptank\Models\Email as EmailModel;
+
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 use App\Zaptank\Helpers\Cryptography;
@@ -205,10 +207,94 @@ class ConfigController {
     }    
     
     public function saveEmailChangeRequest(Request $request, Response $response) :Response {
-        $body = json_encode([
-            'success' => true,
-            'message' => 'Um e-mail para alterar o e-mail foi enviado.'
-        ]);
+
+        $email = $_POST['email'];
+
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->validate($jwt);
+
+        $uid = $payload['sub']; 
+        $account_email = $payload['email'];
+
+        if(empty($email)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O e-mail deve ser informado.',
+                'status_code' => 'empty_fields'
+            ]);
+        } else if($email != $account_email) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O e-mail informado é inválido e não está associado a conta.',
+                'status_code' => 'invalid_email'
+            ]);
+        } else {
+            $emailModel = new EmailModel;
+
+            $emailChangeRequest = $emailModel->selectEmailChangeRequest($uid);
+
+            if(!empty($emailChangeRequest)) {
+
+                $emailChangeRequestDate = $emailChangeRequest['Date'];
+                
+                $start_date = new DateTime($emailChangeRequestDate);
+                $since_start = $start_date->diff(
+                    new DateTime(date('Y-m-d H:i:s'))
+                );
+                
+                if($since_start->i < 2) {
+                    $lastEmailChangeRequest = date('H:i:s', strtotime($emailChangeRequestDate));
+
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => "Aguarde 2 minutos para enviar outro e-mail, você enviou um e-mail em {$lastEmailChangeRequest}",
+                        'status_code' => 'many_attempts'
+                    ]);
+                }
+            } else {
+                $account = new Account;
+                $user = $account->selectByEmail($email);
+
+                if($user['VerifiedEmail'] == 0) {
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => "{$email} não foi verificado, verifique-o primeiro para prosseguir com a alteração!",
+                        'status_code' => 'unverified_email'
+                    ]);
+                } else {
+                    $cryptography = new Cryptography;
+                    $EncMail = $cryptography->EncryptText($email);
+                    $token = md5(time());
+                    
+                    $emailModel->insertEmailChangeRequest($uid, $token, $date = date('d/m/Y H:i:s'));
+
+                    $emailService = new Email;
+                    $email_sent = $emailService->send(
+                        $subject = "Alerta de segurança: {$email}, verifique o acesso à sua conta do ZapTank",
+                        $body = '<style>@import url(https://fonts.googleapis.com/css?family=Roboto);body{font-family: "Roboto", sans-serif; font-size: 48px;}</style><table cellpadding="0" cellspacing="0" border="0" style="padding:0;margin:0 auto;width:100%;max-width:620px"> <tbody> <tr> <td colspan="3" style="padding:0;margin:0;font-size:1px;height:1px" height="1">&nbsp;</td></tr><tr> <td style="padding:0;margin:0;font-size:1px">&nbsp;</td><td style="padding:0;margin:0" width="590"> <span class="im"> <table width="100%" cellspacing="0" cellpadding="0" border="0"> <tbody> <tr style="background-color:#fff"> <td style="padding:11px 23px 8px 15px;float:right;font-size:12px;font-weight:300;line-height:1;color:#666;font-family:"Proxima Nova",Helvetica,Arial,sans-serif"> <p style="float:right">' . $email . '</p></td></tr></tbody> </table> <table bgcolor="#d65900" width="100%" cellspacing="0" cellpadding="0" border="0"> <tbody> <tr> <td height="0"></td></tr><tr> <td align="center" style="display:none"><img alt="DDTank" width="90" style="width:90px;text-align:center"></td></tr><tr> <td height="0"></td></tr><tr> <td class="m_-5336645264442155576title m_-5336645264442155576bold" style="padding:63px 33px;text-align:center" align="center"> <span class="m_-5336645264442155576mail__title" style=""> <h1><font color="#ffffff">Recebemos um pedido para alterar seu e-mail!</font></h1> </span> </td></tr><tr> <td style="text-align:center;padding:0"> <div id="m_-5336645264442155576responsive-width" class="m_-5336645264442155576responsive-width" width="78.2% !important" style="width:77.8%!important;margin:0 auto;background-color:#fbee00;display:none"> <div style="height:50px;margin:0 auto">&nbsp;</div></div></td></tr></tbody> </table> </span> <div id="m_-5336645264442155576div-table-wrapper" class="m_-5336645264442155576div-table-wrapper" style="text-align:center;margin:0 auto"> <table class="m_-5336645264442155576main-card-shadow" bgcolor="#ffffff" align="center" border="0" cellpadding="0" cellspacing="0" style="border:none;padding:48px 33px 0;text-align:center"> <tbody> <tr> <td align="center"> <table class="m_-5336645264442155576mail__buttons-container" align="center" width="200" border="0" cellpadding="0" cellspacing="0" style="border-radius:4px;height:48px;width:240px;table-layout:fixed;margin:32px auto"> <tbody> <tr> <td style="border-radius:4px;height:30px;font-family:"Proxima nova",Helvetica,Arial,sans-serif" bgcolor="#d65900"><a href="https://redezaptank.com.br/change_mail?token=' . $token . '" style="padding:10px 3px;display:block;font-family:Arial,Helvetica,sans-serif;font-size:16px;color:#fff;text-decoration:none;text-align:center" target="_blank" data-saferedirecturl="https://redezaptank.com.br/change_mail?token=' . $token . '">Alterar e-mail</a></td></tr></tbody> </table> </td></tr><tr> <td align="center"><p class="m_-5336645264442155576mail__text-card m_-5336645264442155576bold" style="text-decoration:none;font-family:"Proxima Nova",Arial,Helvetica,sans-serif;text-align:center;line-height:16px;max-width:390px;width:100%;margin:0 auto 44px;font-size:14px;color:#999">O ZapTank enviou este e-mail pois você optou por recebê-lo ao cadastrar-se no site. Se você não deseja receber e-mails, <a href="https://redezaptank.com.br/unsubscribemaillist?mail=' . $EncMail . '" style="color:rgb(227, 72, 0);text-decoration:none" target="_blank" data-saferedirecturl="">cancele o recebimento</p></td></tr></tbody> </table> </div></td><td style="padding:0;margin:0;font-size:1px">&nbsp;</td></tr><tr> <td colspan="3" style="padding:0;margin:0;font-size:1px;height:1px" height="1">&nbsp;</td></tr></tbody></table><small class="text-muted"><?php setlocale(LC_TIME, "pt_BR", "pt_BR.utf-8", "pt_BR.utf-8", "portuguese"); date_default_timezone_set("America/Sao_Paulo"); echo strftime("%A, %d de %B de %Y", strtotime("today"));?></small> </p></div></div>',
+                        $altBody = 'Troca de e-mail',
+                        $email
+                    );
+
+                    if($email_sent) {
+                        $body = json_encode([
+                            'success' => true,
+                            'message' => 'Email enviado com sucesso, caso não encontre nenhum email verifique o SPAM.',
+                            'status_code' => 'email_sent'
+                        ]);                    
+                    } else {
+                        $body = json_encode([
+                            'success' => false,
+                            'message' => 'Seu e-mail não foi enviado, estamos com uma demanda de e-mails acima do normal. Nossos engenheiros foram notificados e estão resolvendo o mais rápido possível.',
+                            'status_code' => 'email_not_sent'
+                        ]);                
+                    }
+                }
+            }
+        }
+
         $response->getBody()->write($body);
         return $response;
     }
