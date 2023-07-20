@@ -15,18 +15,6 @@ class Account extends Model {
     }
 
 
-    public function insertEmailActivationToken(int $userId, $token, string $data) {
-
-        $conn = $this->db->get();
-
-        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, Date) VALUES(:userID, :token, :Date)");
-        $stmt->bindParam(':userID', $userId);
-        $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':Date', $data);
-        $stmt->execute();        
-    }
-
-
     public function selectByUserAndPassword(string $email, $password) :array {
         
         $conn = $this->db->get();

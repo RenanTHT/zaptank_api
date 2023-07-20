@@ -6,6 +6,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Zaptank\Models\Account;
+use App\Zaptank\Models\Email as EmailModel;
+
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 
@@ -70,7 +72,8 @@ class AccountController {
                     $activation_token = md5(time());
                     $EncMail = $email;
     
-                    $account->insertEmailActivationToken($uid, $activation_token, $data = $data = date('Y/m/d H:i'));
+                    $emailModel = new EmailModel;
+                    $emailModel->insertEmailActivationToken($uid, $activation_token, $data = date('Y-m-d H:i:s'));
     
                     $emailService = new Email;
                     

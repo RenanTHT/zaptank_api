@@ -11,10 +11,10 @@ class Email extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, Date) VALUES(:userID, :token, :Date)");
+        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, Date) VALUES(:userID, :token, CONVERT(datetime, :date, 121))");
         $stmt->bindParam(':userID', $userId);
         $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':Date', $data);
+        $stmt->bindParam(':date', $data);
         $stmt->execute();        
     }
 
