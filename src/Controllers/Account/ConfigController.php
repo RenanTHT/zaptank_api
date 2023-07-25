@@ -295,7 +295,51 @@ class ConfigController {
     }
 
     public function changeEmail(Request $request, Response $response) :Response {
-        $response->getBody()->write('changeEmail');
+
+        $token = $_POST['token'];
+        $new_email = $_POST['new_email'];
+
+        if(empty($token)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O token deve ser informado.',
+                'status_code' => 'empty_fields'
+            ]);
+        } else if(empty($new_email)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Você não preencheu todos os campos solicitados.',
+                'status_code' => 'empty_fields'
+            ]);
+        } else {
+            $account = new Account; 
+
+            if(!empty($account->selectByEmail($new_email))) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'Já existe alguém com esse endereço de e-mail...',
+                    'status_code' => 'email_in_use'
+                ]);
+            } else {
+                $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+                $token = new Token;
+                $payload = $token->validate($jwt);
+        
+                $uid = $payload['sub']; 
+                $account_email = $payload['email'];
+                
+                $account->updateEmail($account_email, $new_email);
+
+                $body = json_encode([
+                    'success' => true,
+                    'message' => 'E-mail alterado com sucesso, realize o login novamente.',
+                    'status_code' => 'email_changed'
+                ]);
+            }
+        }
+
+        $response->getBody()->write($body);
         return $response;
     }
 }
