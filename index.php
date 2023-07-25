@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
+use Slim\Routing\RouteCollectorProxy;
 use Slim\Factory\AppFactory;
 use Slim\Exception\HttpNotFoundException;
 
@@ -35,12 +36,15 @@ $app->add(function ($request, $handler) use ($app) {
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
 });
 
-$app->post('/account/phone/change', [ConfigController::class, 'changePhone'])->add(new ensureJwtAuthTokenIsValid);
-$app->post('/account/password/change', [ConfigController::class, 'changePassword'])->add(new ensureJwtAuthTokenIsValid);
-$app->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified'])->add(new ensureJwtAuthTokenIsValid);
-$app->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest'])->add(new ensureJwtAuthTokenIsValid);
-$app->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new ensureJwtAuthTokenIsValid);
+$app->group('', function(RouteCollectorProxy $group) {
+    $group->post('/account/phone/change', [ConfigController::class, 'changePhone']);
+    $group->post('/account/password/change', [ConfigController::class, 'changePassword']);
+    $group->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified']);
+    $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
+    $group->post('/account/email/change', [ConfigController::class, 'changeEmail']);
+})->add(new ensureJwtAuthTokenIsValid);
+
 $app->post('/account/new', [AccountController::class, 'new']);
-$app->post('/auth/login', [AuthController::class, 'make']);
+$app->post('/auth/login', [AuthController::class, 'make']);    
 
 $app->run();
