@@ -89,7 +89,7 @@ class Account extends Model {
         $conn->query("UPDATE Db_Center.dbo.Bag_Goods SET UserName = '$new_email' WHERE UserName='$current_email'");
         $conn->query("UPDATE Db_Center.dbo.Vip_Data SET UserName = '$new_email' WHERE UserName='$current_email'");
         $conn->query("UPDATE Db_Center.dbo.User_Award_GiftCode SET UserName = '$new_email' WHERE UserName='$current_email'");
-        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET BadMail='0' WHERE Email='$current_email'");
-        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET VerifiedEmail='0' WHERE Email='$current_email'");
+        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET BadMail='0' WHERE Email='$new_email'");
+        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET VerifiedEmail='0' WHERE Email='$new_email'");
     }
 }
