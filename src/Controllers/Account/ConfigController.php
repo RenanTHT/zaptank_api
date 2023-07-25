@@ -9,6 +9,7 @@ use Slim\Psr7\Response;
 use App\Zaptank\Models\Account;
 use App\Zaptank\Models\Email as EmailModel;
 
+use App\Zaptank\Database;
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 use App\Zaptank\Helpers\Cryptography;
@@ -330,6 +331,10 @@ class ConfigController {
                 $account_email = $payload['email'];
                 
                 $account->updateEmail($account_email, $new_email);
+
+                $database = new Database;
+
+                $database->get()->query("UPDATE Db_Center.dbo.change_email SET IsChanged=1 WHERE userID = '$uid'");
 
                 $body = json_encode([
                     'success' => true,
