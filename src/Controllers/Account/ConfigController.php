@@ -234,7 +234,7 @@ class ConfigController {
         } else {
             $emailModel = new EmailModel;
             $emailChangeRequest = $emailModel->selectEmailChangeRequest($uid);
-
+            // observação: testar calculo de intervalo
             $start_date = (!empty($emailChangeRequest)) ?  new \DateTime(date('Y-m-d H:i:s', strtotime($emailChangeRequest['Date']))) : new \DateTime(date('Y-m-d H:i:s'));
 
             $since_start = $start_date->diff(new \DateTime(date('Y-m-d H:i:s')));
@@ -297,19 +297,12 @@ class ConfigController {
 
     public function changeEmail(Request $request, Response $response) :Response {
 
-        $token = $_POST['token'];
         $new_email = $_POST['new_email'];
 
-        if(empty($token)) {
+        if(empty($new_email)) {
             $body = json_encode([
                 'success' => false,
-                'message' => 'O token deve ser informado.',
-                'status_code' => 'empty_fields'
-            ]);
-        } else if(empty($new_email)) {
-            $body = json_encode([
-                'success' => false,
-                'message' => 'Você não preencheu todos os campos solicitados.',
+                'message' => 'Você deve informar o novo e-mail.',
                 'status_code' => 'empty_fields'
             ]);
         } else {

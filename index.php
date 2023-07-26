@@ -16,6 +16,7 @@ use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\ConfigController;
 
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
+use App\Zaptank\Middlewares\checkIfEmailChangeTokenIsValid;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -41,7 +42,7 @@ $app->group('', function(RouteCollectorProxy $group) {
     $group->post('/account/password/change', [ConfigController::class, 'changePassword']);
     $group->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified']);
     $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
-    $group->post('/account/email/change', [ConfigController::class, 'changeEmail']);
+    $group->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
