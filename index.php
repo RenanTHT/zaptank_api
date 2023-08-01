@@ -14,9 +14,11 @@ use Slim\Exception\HttpNotFoundException;
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\ConfigController;
+use App\Zaptank\Controllers\Character\CharacterConfigController;
 
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\checkIfEmailChangeTokenIsValid;
+use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -43,6 +45,7 @@ $app->group('', function(RouteCollectorProxy $group) {
     $group->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified']);
     $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
     $group->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
+    $group->post('/character/config/changenick', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
