@@ -14,6 +14,8 @@ use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 use App\Zaptank\Helpers\Cryptography;
 
+use App\Zaptank\Helpers\Date;
+
 class ConfigController {
     
     public function changePhone(Request $request, Response $response) : Response {
@@ -234,12 +236,11 @@ class ConfigController {
         } else {
             $emailModel = new EmailModel;
             $emailChangeRequest = $emailModel->selectEmailChangeRequest($uid);
-            // observação: testar calculo de intervalo
-            $start_date = (!empty($emailChangeRequest)) ?  new \DateTime(date('Y-m-d H:i:s', strtotime($emailChangeRequest['Date']))) : new \DateTime(date('Y-m-d H:i:s'));
 
-            $since_start = $start_date->diff(new \DateTime(date('Y-m-d H:i:s')));
+            $created_at = (!empty($emailChangeRequest)) ? date('Y-m-d H:i:s', strtotime($emailChangeRequest['Date'])) : date('Y-m-d H:i:s');
+            $interval = Date::difference($created_at, Date::getDate());
 
-            if($since_start->i < 2) {
+            if($interval->i < 2 && $interval->h == 0 && $interval->d == 0 && $interval->m == 0 && $interval->y == 0) {
                 $lastEmailChangeRequest = date('H:i:s', strtotime($emailChangeRequest['Date']));
 
                 $body = json_encode([
