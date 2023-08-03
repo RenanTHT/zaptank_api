@@ -46,6 +46,7 @@ $app->group('', function(RouteCollectorProxy $group) {
     $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
     $group->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
     $group->post('/character/config/changenick', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
+    $group->post('/character/config/clearbag', [CharacterConfigController::class, 'clearbag']);
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);

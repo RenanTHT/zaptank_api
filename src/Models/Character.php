@@ -39,4 +39,12 @@ class Character extends Model{
         $conn->query("UPDATE {$BaseUser}.dbo.Consortia SET ChairmanName=N'$nickname' WHERE ChairmanID='$userId'");
         $conn->query("UPDATE {$BaseUser}.dbo.Consortia_Users SET UserName=N'$nickname' WHERE UserID='$userId'");        
     }
+
+
+    public function updateCharacterBag($userId, $BaseUser = 'Db_Tank_102') :void {
+        
+        $conn = $this->db->get();
+
+        $conn->query("UPDATE {$BaseUser}.dbo.Sys_Users_Goods SET IsExist=0 WHERE UserID='$userId' AND BagType=0 AND place >=80 AND StrengthenLevel = 0");
+    }
 }
