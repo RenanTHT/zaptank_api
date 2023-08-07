@@ -133,4 +133,19 @@ class CharacterConfigController {
             return $response;
         }  
     }
+
+
+    public function redeemGiftCode(Request $request, Response $response) :Response {
+
+        $giftCode = strtoupper($_POST['giftcode']);
+
+        $body = json_encode([
+            'success' => true,
+            'message' => $giftCode,
+            'status_code' => ''
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;        
+    }
 }
