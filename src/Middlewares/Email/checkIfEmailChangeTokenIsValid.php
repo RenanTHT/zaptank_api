@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zaptank\Middlewares;
+namespace App\Zaptank\Middlewares\Email;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
