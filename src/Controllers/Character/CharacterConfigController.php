@@ -5,9 +5,14 @@ namespace App\Zaptank\Controllers\Character;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
+use App\Zaptank\Models\Server;
 use App\Zaptank\Models\Account;
 use App\Zaptank\Models\Character;
+use App\Zaptank\Models\CharacterMail;
+use App\Zaptank\Models\Gift;
+
 use App\Zaptank\Services\Token;
+use App\Zaptank\Services\CurlRequest;
 
 class CharacterConfigController {
 
@@ -138,13 +143,39 @@ class CharacterConfigController {
     public function redeemGiftCode(Request $request, Response $response) :Response {
 
         $giftCode = strtoupper($_POST['giftcode']);
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->validate($jwt);
+        $account_email = $payload['email'];
+
+        $gift = new Gift;
+        $characterMail = new CharacterMail;
+        $character = new Character;
+
+        $character->search($account_email);
+        $characterId = $character->Id;
+        $characterNickname = $character->nickName;        
+
+        $server = new Server;
+        $server->search($suv = 'teste');
+        
+        $rewardInfo = $gift->selectRewardInfoByCode($giftCode);
+        $templateId = $rewardInfo['TemplateID'];
+        $count = $rewardInfo['Count'];
+        
+        $characterMail->SP_Admin_SendUserItem($characterId, $characterNickname, $templateId, $count);
+        $gift->StoreUserRewardCollectionRecord($account_email, $count, $giftCode);
+
+        $curlRequest = new CurlRequest;
+        $curlRequest->post("{$server->questUrl}/UpdateMailByUserID.ashx?UserID=$characterId&AreaID={$server->areaId}&key=TqUserZap777");
 
         $body = json_encode([
             'success' => true,
-            'message' => $giftCode,
-            'status_code' => ''
+            'message' => 'Sucesso no resgate, sua recompensa foi enviada para seu correio!',
+            'status_code' => 'reward_sent_successfully'
         ]);
-
+        
         $response->getBody()->write($body);
         return $response;        
     }

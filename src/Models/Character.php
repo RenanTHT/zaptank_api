@@ -7,6 +7,25 @@ use \PDO;
 
 class Character extends Model{
 
+    public $Id;
+    public $userName;
+    public $nickName;
+
+    public function search($userName, $BaseUser = 'Db_Tank_102') {
+        
+        $conn = $this->db->get();
+        
+        $stmt = $conn->prepare("SELECT UserID, UserName, NickName FROM {$BaseUser}.dbo.Sys_Users_Detail WHERE UserName = :userName");
+        $stmt->bindParam(':userName', $userName);
+        $stmt->execute();
+        $characterInfo = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $this->Id = $characterInfo['UserID'];
+        $this->userName = $characterInfo['UserName'];
+        $this->nickName = $characterInfo['NickName'];
+    }
+
+    
     public function getCharacterCountByNickname($nickName, $BaseUser = 'Db_Tank_102') {
         
         $conn = $this->db->get();
