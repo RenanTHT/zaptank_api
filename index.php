@@ -15,6 +15,7 @@ use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\ConfigController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
+use App\Zaptank\Controllers\Server\ServerController;
 
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
@@ -41,15 +42,20 @@ $app->add(function ($request, $handler) use ($app) {
 });
 
 $app->group('', function(RouteCollectorProxy $group) {
+
     $group->post('/account/phone/change', [ConfigController::class, 'changePhone']);
     $group->post('/account/password/change', [ConfigController::class, 'changePassword']);
     $group->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified']);
     $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
     $group->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
+
+    // Criar grupo de rota /character/config e adicionar middlewares para verificar se usuário possui personagem e se parâmetro suv é valido
     $group->post('/character/config/changenick', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
     $group->post('/character/config/clearbag', [CharacterConfigController::class, 'clearbag']);
     $group->post('/character/config/giftcode', [CharacterConfigController::class, 'redeemGiftCode'])->add(new ChecksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
 })->add(new ensureJwtAuthTokenIsValid);
+
+$app->get('/server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
 
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);    

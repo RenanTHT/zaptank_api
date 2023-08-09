@@ -13,9 +13,7 @@ class Server extends Model {
     public $areaId;
     public $questUrl;
 
-    public function search(string $suv) :void {
-
-        $serverId = 1;
+    public function search($serverId) :bool {
 
         $conn = $this->db->get();
 
@@ -24,11 +22,16 @@ class Server extends Model {
         $stmt->execute();
         $serverInfo = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->setId($serverInfo['ID']);
-        $this->setBaseUser($serverInfo['BaseUser']);
-        $this->setBaseTank($serverInfo['BaseTank']);
-        $this->setAreaId($serverInfo['AreaID']);
-        $this->setQuestUrl($serverInfo['QuestUrl']);        
+        if(!empty($serverInfo)) {        
+            $this->setId($serverInfo['ID']);
+            $this->setBaseUser($serverInfo['BaseUser']);
+            $this->setBaseTank($serverInfo['BaseTank']);
+            $this->setAreaId($serverInfo['AreaID']);
+            $this->setQuestUrl($serverInfo['QuestUrl']);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private function setId($id) {
