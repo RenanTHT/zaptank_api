@@ -158,7 +158,7 @@ class CharacterConfigController {
         $characterNickname = $character->nickName;        
 
         $server = new Server;
-        $server->search($suv = 'teste');
+        $server->search($suv = 1);
         
         $rewardInfo = $gift->selectRewardInfoByCode($giftCode);
         $templateId = $rewardInfo['TemplateID'];
