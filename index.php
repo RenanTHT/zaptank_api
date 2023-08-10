@@ -14,6 +14,7 @@ use Slim\Exception\HttpNotFoundException;
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\ConfigController;
+use App\Zaptank\Controllers\Character\CharacterController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\Server\ServerController;
 
@@ -48,14 +49,17 @@ $app->group('', function(RouteCollectorProxy $group) {
     $group->post('/account/email/changenotverified', [ConfigController::class, 'changeEmailNotVerified']);
     $group->post('/account/email/changerequest', [ConfigController::class, 'saveEmailChangeRequest']);
     $group->post('/account/email/change', [ConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
-
+  
     // Criar grupo de rota /character/config e adicionar middlewares para verificar se usuário possui personagem e se parâmetro suv é valido
     $group->post('/character/config/changenick', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
     $group->post('/character/config/clearbag', [CharacterConfigController::class, 'clearbag']);
     $group->post('/character/config/giftcode', [CharacterConfigController::class, 'redeemGiftCode'])->add(new ChecksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
-})->add(new ensureJwtAuthTokenIsValid);
 
-$app->get('/server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
+    // checa se personagem foi criado
+    $group->get('/character/check', [CharacterController::class, 'checkIfCharacterWasCreated']);
+    
+    $group->get('/server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
+})->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);    

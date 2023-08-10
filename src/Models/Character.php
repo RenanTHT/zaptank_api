@@ -11,7 +11,7 @@ class Character extends Model{
     public $userName;
     public $nickName;
 
-    public function search($userName, $BaseUser = 'Db_Tank_102') {
+    public function search($userName, $BaseUser = 'Db_Tank_102') :bool {
         
         $conn = $this->db->get();
         
@@ -20,9 +20,14 @@ class Character extends Model{
         $stmt->execute();
         $characterInfo = $stmt->fetch(PDO::FETCH_ASSOC);
         
-        $this->Id = $characterInfo['UserID'];
-        $this->userName = $characterInfo['UserName'];
-        $this->nickName = $characterInfo['NickName'];
+        if(!empty($characterInfo)) {
+            $this->Id = $characterInfo['UserID'];
+            $this->userName = $characterInfo['UserName'];
+            $this->nickName = $characterInfo['NickName'];
+            return true;
+        } else {
+            return false;
+        }
     }
 
     
