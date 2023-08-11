@@ -9,7 +9,7 @@ use Slim\Psr7\Response;
 use App\Zaptank\Models\Gift;
 use App\Zaptank\Services\Token;
 
-class ChecksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser {
+class checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 
