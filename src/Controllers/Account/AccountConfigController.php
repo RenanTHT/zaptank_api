@@ -16,7 +16,7 @@ use App\Zaptank\Helpers\Cryptography;
 
 use App\Zaptank\Helpers\Date;
 
-class ConfigController {
+class AccountConfigController {
     
     public function changePhone(Request $request, Response $response) : Response {
 
