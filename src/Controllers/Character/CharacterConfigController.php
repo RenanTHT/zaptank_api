@@ -14,6 +14,8 @@ use App\Zaptank\Models\Gift;
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\CurlRequest;
 
+use App\Zaptank\Helpers\Cryptography;
+
 class CharacterConfigController {
 
     public function changenick(Request $request, Response $response) :Response {
@@ -140,8 +142,9 @@ class CharacterConfigController {
     }
 
 
-    public function redeemGiftCode(Request $request, Response $response) :Response {
+    public function redeemGiftCode(Request $request, Response $response, array $args) :Response {
 
+        $suv = $args['suv'];
         $giftCode = strtoupper($_POST['giftcode']);
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
@@ -157,8 +160,11 @@ class CharacterConfigController {
         $characterId = $character->Id;
         $characterNickname = $character->nickName;        
 
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
         $server = new Server;
-        $server->search($suv = 1);
+        $server->search($decryptServer);
         
         $rewardInfo = $gift->selectRewardInfoByCode($giftCode);
         $templateId = $rewardInfo['TemplateID'];
