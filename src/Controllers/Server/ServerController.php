@@ -18,7 +18,6 @@ class ServerController {
         $decryptServer = $cryptography->DecryptText($suv);
 
         $server = new Server;
-        $serverInfo = $server->search($decryptServer);
 
         if($server->search($decryptServer)) {
             $body = json_encode([

@@ -10,7 +10,7 @@ use Slim\Routing\RouteContext;
 use App\Zaptank\Models\Server;
 use App\Zaptank\Helpers\Cryptography;
 
-class checkIfServerSuvParameterIsValid {
+class checkIfServerSuvParameterIsInvalid {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 

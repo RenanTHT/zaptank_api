@@ -6,8 +6,8 @@ use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
 use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
 use App\Zaptank\Middlewares\Gift\checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser;
-use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsValid;
-use App\Zaptank\Middlewares\Character\checkIfCharacterWasCreated;
+use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsInvalid;
+use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
 
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
@@ -26,12 +26,12 @@ $app->group('/', function(RouteCollectorProxy $group) {
   
     // adicionar middlewares para verificar se parâmetro suv é valido e se usuário possui personagem
     $group->group('character/config', function(RouteCollectorProxy $group) {
-        $group->post('/changenick', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
-        $group->post('/clearbag', [CharacterConfigController::class, 'clearbag']);
-        $group->post('/giftcode', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
+        $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
+        $group->post('/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
+        $group->post('/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
     })
-    ->add(new checkIfServerSuvParameterIsValid)
-    ->add(new checkIfCharacterWasCreated);
+    ->add(new checkIfServerSuvParameterIsInvalid)
+    ->add(new checkIfCharacterWasNotCreated);
 
     // checa se personagem foi criado
     $group->get('character/check', [CharacterController::class, 'checkIfCharacterWasCreated']);
@@ -40,4 +40,4 @@ $app->group('/', function(RouteCollectorProxy $group) {
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
-$app->post('/auth/login', [AuthController::class, 'make']);    
+$app->post('/auth/login', [AuthController::class, 'make']);
