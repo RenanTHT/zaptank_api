@@ -8,6 +8,7 @@ use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
 use App\Zaptank\Middlewares\Gift\checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser;
 use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsInvalid;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
+use App\Zaptank\Middlewares\Character\checkIfCharacterWasCreated;
 
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\Account\AccountController;
@@ -24,7 +25,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
     
-    $group->post('/character/create', [CharacterController::class, 'new']);
+    $group->post('character/create/{suv}', [CharacterController::class, 'new'])
+    ->add(new checkIfServerSuvParameterIsInvalid)
+    ->add(new checkIfCharacterWasCreated);
 
     $group->group('character/config', function(RouteCollectorProxy $group) {
         $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
