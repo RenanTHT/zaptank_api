@@ -23,8 +23,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changenotverified', [AccountConfigController::class, 'changeEmailNotVerified']);
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
-  
-    // adicionar middlewares para verificar se parâmetro suv é valido e se usuário possui personagem
+    
+    $group->post('/character/create', [CharacterController::class, 'new']);
+
     $group->group('character/config', function(RouteCollectorProxy $group) {
         $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
         $group->post('/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
@@ -33,7 +34,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
     ->add(new checkIfServerSuvParameterIsInvalid)
     ->add(new checkIfCharacterWasNotCreated);
 
-    // checa se personagem foi criado
     $group->get('character/check', [CharacterController::class, 'checkIfCharacterWasCreated']);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);

@@ -10,6 +10,18 @@ use App\Zaptank\Services\Token;
 
 class CharacterController {
 
+    public function new(Request $request, Response $response) :Response {
+        $body = json_encode([
+            'success' => true,
+            'message' => 'Personagem criado com sucesso!',
+            'status_code' => 'character_created'
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
+
+    
     public function checkIfCharacterWasCreated(Request $request, Response $response) :Response {
 
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
