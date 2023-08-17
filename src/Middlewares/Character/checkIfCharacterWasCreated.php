@@ -25,7 +25,7 @@ class checkIfCharacterWasCreated {
         if($character->search($account_email) == true) {
             $body = json_encode([
                 'success' => false,
-                'message' => 'Você deve criar o personagem antes de utilizar a função.',
+                'message' => 'Você já criou uma conta neste servidor.',
                 'status_code' => 'character_creation_required'             
             ]);
 
