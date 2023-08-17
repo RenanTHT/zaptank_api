@@ -5,7 +5,7 @@ namespace App\Zaptank\Models;
 use App\Zaptank\Models\Model;
 use \PDO;
 
-class Character extends Model{
+class Character extends Model {
 
     public $Id;
     public $userName;
@@ -31,6 +31,21 @@ class Character extends Model{
     }
 
     
+    public function store($userName, $nickname, $gender, $serverName = 'S15 | ANTIGO', $areaId = '1001', $BaseUser = 'Db_Tank_102') :void {
+
+        $conn = $this->db->get();
+
+        $conn->query("EXEC $BaseUser.dbo.SP_Users_Active @UserID='',@Attack=0,@Colors=N',,,,,,',@ConsortiaID=0,@Defence=0,@Gold=100000,@GP=1437053,@Grade=25,@Luck=0,@Money=0,@Style=N',,,,,,',@Agility=0,@State=0,@UserName=N'$userName',@PassWord=N'',@Sex='$gender',@Hide=1111111111,@Skin=N'',@Site=N''");
+        
+        if ($gender == 1) {
+            $conn->query("EXEC $BaseUser.dbo.SP_Users_RegisterNotValidate @UserName=N'$userName',@PassWord=N'',@NickName=N'$nickname',@BArmID=7008,@BHairID=3158,@BFaceID=6103,@BClothID=5160,@BHatID=1142,@GArmID=7008,@GHairID=3158,@GFaceID=6103,@GClothID=5160,@GHatID=1142,@ArmColor=N'',@HairColor=N'',@FaceColor=N'',@ClothColor=N'',@HatColor=N'',@Sex='$gender',@StyleDate=0,@ServerName='$serverName',@AreaID='$areaId'");
+        } else {
+            $conn->query("EXEC $BaseUser.dbo.SP_Users_RegisterNotValidate @UserName=N'$userName',@PassWord=N'',@NickName=N'$nickname',@BArmID=7008,@BHairID=3244,@BFaceID=6204,@BClothID=5276,@BHatID=1214,@GArmID=7008,@GHairID=3244,@GFaceID=6202,@GClothID=5276,@GHatID=1214,@ArmColor=N'',@HairColor=N'',@FaceColor=N'',@ClothColor=N'',@HatColor=N'',@Sex='$gender',@StyleDate=0,@ServerName='$serverName',@AreaID='$areaId'");
+        }
+        $conn->query("EXEC $BaseUser.dbo.SP_Users_LoginWeb @UserName=N'$userName',@Password=N'',@FirstValidate=0,@NickName=N'$nickname'");
+    }
+
+
     public function getCharacterCountByNickname($nickName, $BaseUser = 'Db_Tank_102') {
         
         $conn = $this->db->get();

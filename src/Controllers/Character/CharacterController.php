@@ -11,6 +11,19 @@ use App\Zaptank\Services\Token;
 class CharacterController {
 
     public function new(Request $request, Response $response) :Response {
+
+        $nickname = $_POST['nickname'];
+        $gender = $_POST['gender'];
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->validate($jwt);
+        $account_email = $payload['email'];
+
+        $character = new Character;
+
+        $character->store($account_email, $nickname, $gender);
+
         $body = json_encode([
             'success' => true,
             'message' => 'Personagem criado com sucesso!',
