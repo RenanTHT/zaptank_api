@@ -5,6 +5,7 @@ use Slim\Routing\RouteCollectorProxy;
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
 use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
+use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNicknameIsValid;
 use App\Zaptank\Middlewares\Gift\checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser;
 use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsInvalid;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
@@ -27,7 +28,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     
     $group->post('character/create/{suv}', [CharacterController::class, 'new'])
     ->add(new checkIfServerSuvParameterIsInvalid)
-    ->add(new checkIfCharacterWasCreated);
+    ->add(new checkIfCharacterWasCreated)
+    ->add(new ensureThatTheCharacterNicknameIsValid);
 
     $group->group('character/config', function(RouteCollectorProxy $group) {
         $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
