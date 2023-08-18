@@ -8,6 +8,7 @@ use \PDO;
 class Server extends Model {
     
     public $id;
+    public $serverName;
     public $baseUser;
     public $baseTank;
     public $areaId;
@@ -24,6 +25,7 @@ class Server extends Model {
 
         if(!empty($serverInfo)) {        
             $this->setId($serverInfo['ID']);
+            $this->setServerName($serverInfo['Name']);
             $this->setBaseUser($serverInfo['BaseUser']);
             $this->setBaseTank($serverInfo['BaseTank']);
             $this->setAreaId($serverInfo['AreaID']);
@@ -36,6 +38,10 @@ class Server extends Model {
 
     private function setId($id) {
         $this->id = $id;
+    }
+
+    private function setServerName($serverName) {
+        $this->serverName = $serverName;
     }
     
     private function setBaseUser($baseUser) {

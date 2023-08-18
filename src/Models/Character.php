@@ -30,8 +30,8 @@ class Character extends Model {
         }
     }
 
-    
-    public function store($userName, $nickname, $gender, $serverName = 'S15 | ANTIGO', $areaId = '1001', $BaseUser = 'Db_Tank_102') :void {
+
+    public function store($userName, $nickname, $gender, $serverName, $areaId, $BaseUser) :void {
 
         $conn = $this->db->get();
 

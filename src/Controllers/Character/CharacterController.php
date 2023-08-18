@@ -6,11 +6,15 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Zaptank\Models\Character;
+use App\Zaptank\Models\Server;
 use App\Zaptank\Services\Token;
+use App\Zaptank\Helpers\Cryptography;
 
 class CharacterController {
 
-    public function new(Request $request, Response $response) :Response {
+    public function new(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
 
         $nickname = $_POST['nickname'];
         $gender = $_POST['gender'];
@@ -20,9 +24,14 @@ class CharacterController {
         $payload = $token->validate($jwt);
         $account_email = $payload['email'];
 
-        $character = new Character;
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
 
-        $character->store($account_email, $nickname, $gender);
+        $server = new Server;
+        $server->search($decryptServer);
+
+        $character = new Character;
+        $character->store($account_email, $nickname, $gender, $server->serverName, $server->areaId, $server->baseUser);
 
         $body = json_encode([
             'success' => true,
