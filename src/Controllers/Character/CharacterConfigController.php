@@ -156,15 +156,16 @@ class CharacterConfigController {
         $characterMail = new CharacterMail;
         $character = new Character;
 
-        $character->search($account_email);
-        $characterId = $character->Id;
-        $characterNickname = $character->nickName;        
-
         $cryptography = new Cryptography;
         $decryptServer = $cryptography->DecryptText($suv);
 
         $server = new Server;
         $server->search($decryptServer);
+        $baseUser = $server->baseUser;
+        
+        $character->search($account_email, $baseUser);
+        $characterId = $character->Id;
+        $characterNickname = $character->nickName;        
         
         $rewardInfo = $gift->selectRewardInfoByCode($giftCode);
         $templateId = $rewardInfo['TemplateID'];

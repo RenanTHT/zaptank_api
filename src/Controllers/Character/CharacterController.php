@@ -44,7 +44,9 @@ class CharacterController {
     }
 
     
-    public function checkIfCharacterWasCreated(Request $request, Response $response) :Response {
+    public function checkIfCharacterWasCreated(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
 
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
@@ -52,8 +54,15 @@ class CharacterController {
         $payload = $token->validate($jwt);
         $account_email = $payload['email'];
 
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
+
         $character = new Character;
-        $character_is_created = $character->search($account_email);
+        $character_is_created = $character->search($account_email, $baseUser);
 
         $body = json_encode([
             'character_is_created' => $character_is_created

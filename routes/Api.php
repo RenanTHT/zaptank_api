@@ -41,7 +41,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
     ->add(new checkIfServerSuvParameterIsInvalid)
     ->add(new checkIfCharacterWasNotCreated);
 
-    $group->get('character/check', [CharacterController::class, 'checkIfCharacterWasCreated']);
+    $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
 
     $group->post('ticket/new/{suv}', [TicketController::class, 'new'])
     ->add(new checkIfServerSuvParameterIsInvalid)
