@@ -36,7 +36,7 @@ class CharacterConfigController {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Por segurança, para alterar o nome do personagem você deve verificar seu e-mail.',
-                'status_code' => 'email_already_verified'
+                'status_code' => 'unverified_email'
             ]); 
 
             $response->getBody()->write($body);
