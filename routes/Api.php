@@ -2,6 +2,7 @@
 
 use Slim\Routing\RouteCollectorProxy;
 
+use App\Zaptank\Middlewares\Account\ChecksIfAccountEmailIsNotVerified;
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
 use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
@@ -16,6 +17,7 @@ use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\AccountConfigController;
 use App\Zaptank\Controllers\Character\CharacterController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
+use App\Zaptank\Controllers\TicketController;
 use App\Zaptank\Controllers\Server\ServerController;
 
 $app->group('/', function(RouteCollectorProxy $group) {
@@ -40,6 +42,11 @@ $app->group('/', function(RouteCollectorProxy $group) {
     ->add(new checkIfCharacterWasNotCreated);
 
     $group->get('character/check', [CharacterController::class, 'checkIfCharacterWasCreated']);
+
+    $group->post('ticket/new/{suv}', [TicketController::class, 'new'])
+    ->add(new checkIfServerSuvParameterIsInvalid)
+    ->add(new checkIfCharacterWasNotCreated)
+    ->add(new ChecksIfAccountEmailIsNotVerified);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
 })->add(new ensureJwtAuthTokenIsValid);
