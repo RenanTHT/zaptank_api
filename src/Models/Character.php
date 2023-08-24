@@ -11,7 +11,7 @@ class Character extends Model {
     public $userName;
     public $nickName;
 
-    public function search($userName, $BaseUser = 'Db_Tank_102') :bool {
+    public function search($userName, $BaseUser) :bool {
         
         $conn = $this->db->get();
         

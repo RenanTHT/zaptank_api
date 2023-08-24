@@ -23,7 +23,7 @@ class checkIfCharacterWasCreated {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
-        $payload = $token->validate($jwt);
+        $payload = $token->decode($jwt);
         $account_email = $payload['email'];
 
         $cryptography = new Cryptography;

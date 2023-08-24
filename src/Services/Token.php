@@ -35,4 +35,16 @@ class Token {
             return $e->getMessage();
         }
     }    
+    
+    public function decode($jwt) {
+
+        try {
+            $decoded = JWT::decode($jwt, new Key($this->private_key, 'HS256'));
+            $decoded_array = (array) $decoded;
+    
+            return $decoded_array;        
+        } catch (SignatureInvalidException $e) {
+            return $e->getMessage();
+        }
+    }    
 }

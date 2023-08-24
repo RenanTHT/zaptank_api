@@ -24,7 +24,7 @@ class CharacterConfigController {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
-        $payload = $token->validate($jwt);
+        $payload = $token->decode($jwt);
 
         $account_email = $payload['email'];
         $uid = $payload['sub'];
@@ -96,7 +96,7 @@ class CharacterConfigController {
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
     
             $token = new Token;
-            $payload = $token->validate($jwt);
+            $payload = $token->decode($jwt);
     
             $uid = $payload['sub'];
             $account_email = $payload['email'];
@@ -149,7 +149,7 @@ class CharacterConfigController {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
-        $payload = $token->validate($jwt);
+        $payload = $token->decode($jwt);
         $account_email = $payload['email'];
 
         $gift = new Gift;

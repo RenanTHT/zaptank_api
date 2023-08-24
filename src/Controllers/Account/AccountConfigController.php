@@ -24,7 +24,7 @@ class AccountConfigController {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
-        $payload = $token->validate($jwt);
+        $payload = $token->decode($jwt);
 
         $uid = $payload['sub'];
 
@@ -92,7 +92,7 @@ class AccountConfigController {
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
             $token = new Token;
-            $payload = $token->validate($jwt);
+            $payload = $token->decode($jwt);
     
             $uid = $payload['sub'];
             $email = $payload['email'];
@@ -169,7 +169,7 @@ class AccountConfigController {
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
             $token = new Token;
-            $payload = $token->validate($jwt);
+            $payload = $token->decode($jwt);
     
             $account_email = $payload['email'];
 
@@ -216,7 +216,7 @@ class AccountConfigController {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
-        $payload = $token->validate($jwt);
+        $payload = $token->decode($jwt);
 
         $uid = $payload['sub']; 
         $account_email = $payload['email'];
@@ -319,7 +319,7 @@ class AccountConfigController {
                 $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
                 $token = new Token;
-                $payload = $token->validate($jwt);
+                $payload = $token->decode($jwt);
         
                 $uid = $payload['sub']; 
                 $account_email = $payload['email'];
