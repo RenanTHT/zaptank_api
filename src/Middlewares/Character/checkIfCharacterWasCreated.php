@@ -39,7 +39,7 @@ class checkIfCharacterWasCreated {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você já criou uma conta neste servidor.',
-                'status_code' => 'character_creation_required'             
+                'status_code' => 'character_already_created'             
             ]);
 
             $response = new Response();
