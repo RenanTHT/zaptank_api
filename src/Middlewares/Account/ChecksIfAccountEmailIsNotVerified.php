@@ -9,7 +9,7 @@ use Slim\Psr7\Response;
 use App\Zaptank\Models\Account;
 use App\Zaptank\Services\Token;
 
-class ChecksIfAccountEmailIsNotVerified {
+class checksIfAccountEmailIsNotVerified {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 

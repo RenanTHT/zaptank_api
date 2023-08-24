@@ -2,7 +2,7 @@
 
 use Slim\Routing\RouteCollectorProxy;
 
-use App\Zaptank\Middlewares\Account\ChecksIfAccountEmailIsNotVerified;
+use App\Zaptank\Middlewares\Account\checksIfAccountEmailIsNotVerified;
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
 use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
@@ -27,28 +27,27 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changenotverified', [AccountConfigController::class, 'changeEmailNotVerified']);
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
-    
-    $group->post('character/create/{suv}', [CharacterController::class, 'new'])
-    ->add(new checkIfServerSuvParameterIsInvalid)
-    ->add(new checkIfCharacterWasCreated)
-    ->add(new ensureThatTheCharacterNicknameIsValid);
-
-    $group->group('character/config', function(RouteCollectorProxy $group) {
-        $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
-        $group->post('/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
-        $group->post('/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
-    })
-    ->add(new checkIfServerSuvParameterIsInvalid)
-    ->add(new checkIfCharacterWasNotCreated);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
 
-    $group->post('ticket/new/{suv}', [TicketController::class, 'new'])
-    ->add(new checkIfServerSuvParameterIsInvalid)
-    ->add(new checkIfCharacterWasNotCreated)
-    ->add(new ChecksIfAccountEmailIsNotVerified);
+    $group->group('character', function(RouteCollectorProxy $group) {
+
+        $group->group('/config', function(RouteCollectorProxy $group) {
+            $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
+            $group->post('/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
+            $group->post('/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
+        })->add(new checkIfCharacterWasNotCreated);
+
+        $group->post('/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
+
+    })->add(new checkIfServerSuvParameterIsInvalid);
+
+    $group->group('ticket', function(RouteCollectorProxy $group) {
+        $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
+    })->add(new checkIfServerSuvParameterIsInvalid);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
+
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/account/new', [AccountController::class, 'new']);
