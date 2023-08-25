@@ -10,7 +10,7 @@ use App\Zaptank\Services\Token;
 
 class AuthController {
 
-    public function make(Request $request, Response $response) {
+    public function make(Request $request, Response $response) :Response {
 
         $email = $_POST['email'];
         $password = strtoupper(md5($_POST['password']));
