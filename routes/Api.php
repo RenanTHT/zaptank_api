@@ -19,6 +19,7 @@ use App\Zaptank\Controllers\Character\CharacterController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\TicketController;
 use App\Zaptank\Controllers\Server\ServerController;
+use App\Zaptank\Controllers\SurveyController;
 
 $app->group('/', function(RouteCollectorProxy $group) {
 
@@ -47,6 +48,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     })->add(new checkIfServerSuvParameterIsInvalid);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
+
+    $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
 
 })->add(new ensureJwtAuthTokenIsValid);
 

@@ -19,7 +19,7 @@ class Account extends Model {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone, Opinion FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
@@ -33,7 +33,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone, Opinion FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -44,7 +44,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
         
-        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone, Opinion FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
 		$stmt->bindParam(':phone', $phone);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);       
@@ -79,17 +79,38 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET Email = '$new_email' WHERE Email = '$current_email'");
-        $query = $conn->query("SELECT * FROM Db_Center.dbo.Server_List");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET Email = '$new_email' WHERE Email = '$current_email'");
+        $query = $conn->query("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Server_List");
         $result = $query->fetchAll();
         foreach ($result as $infoBase) {
             $BaseUser = $infoBase['BaseUser'];
             $conn->query("UPDATE $BaseUser.dbo.Sys_Users_Detail SET UserName = '$new_email' WHERE UserName = '$current_email'");
         }
-        $conn->query("UPDATE Db_Center.dbo.Bag_Goods SET UserName = '$new_email' WHERE UserName='$current_email'");
-        $conn->query("UPDATE Db_Center.dbo.Vip_Data SET UserName = '$new_email' WHERE UserName='$current_email'");
-        $conn->query("UPDATE Db_Center.dbo.User_Award_GiftCode SET UserName = '$new_email' WHERE UserName='$current_email'");
-        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET BadMail='0' WHERE Email='$new_email'");
-        $conn->query("UPDATE Db_Center.dbo.Mem_UserInfo SET VerifiedEmail='0' WHERE Email='$new_email'");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.Bag_Goods SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.User_Award_GiftCode SET UserName = '$new_email' WHERE UserName='$current_email'");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET BadMail='0' WHERE Email='$new_email'");
+        $conn->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET VerifiedEmail='0' WHERE Email='$new_email'");
+    }
+
+
+    public function updateReference($email, $reference) :void {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET Reference = :reference WHERE Email = :email");
+        $stmt->bindParam(':reference', $reference);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+    }
+    
+    
+    public function updateOpinion($email) :void {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET Opinion = 1 WHERE Email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
     }
 }
