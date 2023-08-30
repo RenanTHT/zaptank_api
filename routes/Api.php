@@ -53,7 +53,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->group('rank', function(RouteCollectorProxy $group) {
-        $group->get('/temporada/list/{suv}', [RankController::class, 'listTemporada']);
+        $group->get('/temporada/list/{suv}', [RankController::class, 'listRankTemporada']);
+        $group->get('/online/list/{suv}', [RankController::class, 'listRankOnline']);
     })->add(new checkIfServerSuvParameterIsInvalid);
 
 })->add(new ensureJwtAuthTokenIsValid);

@@ -9,7 +9,7 @@ use App\Zaptank\Models\Rank;
 
 class RankController {
 
-    public function listTemporada(Request $request, Response $response) :Response {
+    public function listRankTemporada(Request $request, Response $response) :Response {
 
         $rank = new Rank;
 
@@ -44,4 +44,19 @@ class RankController {
         $response->getBody()->write($body);
         return $response;
     }
+
+    public function listRankOnline(Request $request, Response $response) :Response {
+
+        $rank = new Rank;
+
+        $rankList = $rank->selectTopOnline();
+
+        $body = json_encode([
+            'title' => 'Ranking tempo online.',
+            'data' => $rankList
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    } 
 }
