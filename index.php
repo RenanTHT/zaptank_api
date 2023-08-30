@@ -20,7 +20,7 @@ $app = AppFactory::create();
 
 // $app->addErrorMiddleware(false, true, true);
 
-$app->setBasePath('/zaptank_api');
+$app->setBasePath('/api');
 
 $app->add(function ($request, $handler) use ($app) {
     $response = $handler->handle($request);
