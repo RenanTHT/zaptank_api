@@ -55,6 +55,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->group('rank', function(RouteCollectorProxy $group) {
         $group->get('/temporada/list/{suv}', [RankController::class, 'listRankTemporada']);
         $group->get('/online/list/{suv}', [RankController::class, 'listRankOnline']);
+        $group->get('/poder/list/{suv}', [RankController::class, 'listRankPoder']);
+        $group->get('/pvp/list/{suv}', [RankController::class, 'listRankPvp']);
     })->add(new checkIfServerSuvParameterIsInvalid);
 
 })->add(new ensureJwtAuthTokenIsValid);

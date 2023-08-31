@@ -59,4 +59,34 @@ class RankController {
         $response->getBody()->write($body);
         return $response;
     } 
+
+    public function listRankPoder(Request $request, Response $response) :Response {
+
+        $rank = new Rank;
+
+        $rankList = $rank->selectTopPoder();
+
+        $body = json_encode([
+            'title' => 'Ranking de poder',
+            'data' => $rankList
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    } 
+    
+    public function listRankPvp(Request $request, Response $response) :Response {
+
+        $rank = new Rank;
+
+        $rankList = $rank->selectTopPvp();
+
+        $body = json_encode([
+            'title' => 'Ranking de pvp',
+            'data' => $rankList
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    } 
 }
