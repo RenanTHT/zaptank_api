@@ -19,13 +19,13 @@ class Rank extends Model {
             PartidasGanhas as wins, 
             Poder as power,
             Style as style,
-            Sex as gender FROM DB_Center.dbo.Rank_Temporada ORDER BY Rank ASC
+            Sex as gender FROM {$_ENV['BASE_SERVER']}.dbo.Rank_Temporada ORDER BY Rank ASC
         ");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     
-    public function selectTopOnline($BaseUser = 'Db_Tank_102') {
+    public function selectTopOnline($BaseUser) {
 
         $conn = $this->db->get();
 
@@ -41,7 +41,7 @@ class Rank extends Model {
     }
     
     
-    public function selectTopPoder($BaseUser = 'Db_Tank_102') {
+    public function selectTopPoder($BaseUser) {
 
         $conn = $this->db->get();
 
@@ -57,7 +57,7 @@ class Rank extends Model {
     }
     
     
-    public function selectTopPvp($BaseUser = 'Db_Tank_102') {
+    public function selectTopPvp($BaseUser) {
 
         $conn = $this->db->get();
 

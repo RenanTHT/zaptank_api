@@ -6,6 +6,8 @@ use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Zaptank\Models\Rank;
+use App\Zaptank\Models\Server;
+use App\Zaptank\Helpers\Cryptography;
 
 class RankController {
 
@@ -45,11 +47,20 @@ class RankController {
         return $response;
     }
 
-    public function listRankOnline(Request $request, Response $response) :Response {
+    public function listRankOnline(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
+
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
 
         $rank = new Rank;
 
-        $rankList = $rank->selectTopOnline();
+        $rankList = $rank->selectTopOnline($baseUser);
 
         $body = json_encode([
             'title' => 'Ranking tempo online.',
@@ -60,11 +71,20 @@ class RankController {
         return $response;
     } 
 
-    public function listRankPoder(Request $request, Response $response) :Response {
+    public function listRankPoder(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
+
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
 
         $rank = new Rank;
 
-        $rankList = $rank->selectTopPoder();
+        $rankList = $rank->selectTopPoder($baseUser);
 
         $body = json_encode([
             'title' => 'Ranking de poder',
@@ -75,11 +95,20 @@ class RankController {
         return $response;
     } 
     
-    public function listRankPvp(Request $request, Response $response) :Response {
+    public function listRankPvp(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
+
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
 
         $rank = new Rank;
 
-        $rankList = $rank->selectTopPvp();
+        $rankList = $rank->selectTopPvp($baseUser);
 
         $body = json_encode([
             'title' => 'Ranking de pvp',
