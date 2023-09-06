@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zaptank\Services;
+namespace App\Zaptank\Helpers;
 
 class CurlRequest {
 		

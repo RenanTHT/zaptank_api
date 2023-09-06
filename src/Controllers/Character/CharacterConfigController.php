@@ -12,7 +12,7 @@ use App\Zaptank\Models\CharacterMail;
 use App\Zaptank\Models\Gift;
 
 use App\Zaptank\Services\Token;
-use App\Zaptank\Services\CurlRequest;
+use App\Zaptank\Helpers\CurlRequest;
 
 use App\Zaptank\Helpers\Cryptography;
 
