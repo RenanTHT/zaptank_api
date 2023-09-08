@@ -174,8 +174,7 @@ class CharacterConfigController {
         $characterMail->SP_Admin_SendUserItem($characterId, $characterNickname, $templateId, $count);
         $gift->StoreUserRewardCollectionRecord($account_email, $count, $giftCode);
 
-        $curlRequest = new CurlRequest;
-        $curlRequest->post("{$server->questUrl}/UpdateMailByUserID.ashx?UserID=$characterId&AreaID={$server->areaId}&key=TqUserZap777");
+        CurlRequest::post("{$server->questUrl}/UpdateMailByUserID.ashx?UserID=$characterId&AreaID={$server->areaId}&key=TqUserZap777");
 
         $body = json_encode([
             'success' => true,
