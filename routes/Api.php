@@ -20,6 +20,7 @@ use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\RankController;
 use App\Zaptank\Controllers\InvoiceController;
 use App\Zaptank\Controllers\TicketController;
+use App\Zaptank\Controllers\PaymentController;
 use App\Zaptank\Controllers\Server\ServerController;
 use App\Zaptank\Controllers\SurveyController;
 
@@ -56,6 +57,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
 
     $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
+
+    $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment'])->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->group('rank', function(RouteCollectorProxy $group) {
         $group->get('/temporada/list/{suv}', [RankController::class, 'listRankTemporada']);
