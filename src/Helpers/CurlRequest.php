@@ -4,7 +4,7 @@ namespace App\Zaptank\Helpers;
 
 class CurlRequest {
 		
-	public function get(string $url) {
+	public static function get(string $url) {
 		
 		$curl = curl_init();
 		
@@ -21,7 +21,7 @@ class CurlRequest {
 	}
 	
     
-    public function post(string $url) {
+    public static function post(string $url) {
 		
 		$curl = curl_init();
 		
