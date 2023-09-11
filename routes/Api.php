@@ -20,7 +20,8 @@ use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\RankController;
 use App\Zaptank\Controllers\InvoiceController;
 use App\Zaptank\Controllers\TicketController;
-use App\Zaptank\Controllers\PaymentController;
+use App\Zaptank\Controllers\Payments\PaymentController;
+use App\Zaptank\Controllers\Payments\PaymentNotificationController;
 use App\Zaptank\Controllers\Server\ServerController;
 use App\Zaptank\Controllers\SurveyController;
 
@@ -68,6 +69,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
     })->add(new checkIfServerSuvParameterIsInvalid);
 
 })->add(new ensureJwtAuthTokenIsValid);
+
+$app->post('/payment/notification/picpay', [PaymentNotificationController::class, 'picpayNotification']);
+$app->post('/payment/notification/pagarme', [PaymentNotificationController::class, 'pagarmeNotification']);
 
 $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
