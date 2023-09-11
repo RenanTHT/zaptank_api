@@ -4,7 +4,7 @@ namespace App\Zaptank\Services\Payments;
 
 class Pagarme {
 
-    public function generateClient($firstName, $email, $userId) {
+    public static function generateClient($firstName, $email, $userId) {
 
         $curl = curl_init();
         
@@ -24,7 +24,7 @@ class Pagarme {
         return (isset($curl_response['id'])) ? $curl_response['id'] : 0;
     }
 
-    public function requestGenerateQrcode($base64EncodedReference, $price, $clientId) {
+    public static function requestGenerateQrcode($base64EncodedReference, $price, $clientId) {
 
         $curl = curl_init();
 

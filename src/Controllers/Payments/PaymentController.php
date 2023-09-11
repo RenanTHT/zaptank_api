@@ -55,8 +55,7 @@ class PaymentController {
                 $document = "#";
                 $phone = $invoiceDetails['Number'];
                 
-                $picpay = new Picpay;
-                $qrcode = $picpay->requestGenerateQrcode($base64EncodedReference, $price, $firstName, $document, $phone, $account_email);
+                $qrcode = Picpay::requestGenerateQrcode($base64EncodedReference, $price, $firstName, $document, $phone, $account_email);
 
                 if(!empty($qrcode->qrcode->base64)) {
             
@@ -89,9 +88,7 @@ class PaymentController {
                 $firstName = $invoiceDetails['Name'];
                 $price = str_replace(".", "", $invoiceDetails['Price']);
 
-                $pagarme = new Pagarme;
-
-                $clientId = $pagarme->generateClient($firstName, $account_email, $uid);
+                $clientId = Pagarme::generateClient($firstName, $account_email, $uid);
 
                 if($clientId == 0) {
                     $body = json_encode([
@@ -106,7 +103,7 @@ class PaymentController {
 
                 $base64EncodedReference = base64_encode($invoiceId);
 
-                $qrcode = $pagarme->requestGenerateQrcode($base64EncodedReference, $price, $clientId);
+                $qrcode = Pagarme::requestGenerateQrcode($base64EncodedReference, $price, $clientId);
 
                 if(!isset($qrcode['id'])) {
                     $body = json_encode([
