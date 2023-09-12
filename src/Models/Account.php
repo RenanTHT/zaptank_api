@@ -113,4 +113,14 @@ class Account extends Model {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
     }
+    
+    
+    public function updateIsFirstCharge($email) :void {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET IsFirstCharge = 'False' WHERE Email = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+    }
 }

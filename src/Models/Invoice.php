@@ -94,10 +94,20 @@ class Invoice extends Model {
         $stmt->execute();
     }
     
-    public function updateMethod($invoiceId) :void {
+    public function updateStatus($invoiceId, $status) :void {
 
         $conn = $this->db->get();
-        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = 'PIX' WHERE ID = :invoice_id");
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Status = :status WHERE ID = :invoice_id");
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':invoice_id', $invoiceId);
+        $stmt->execute();
+    }
+
+    public function updateMethod($invoiceId, $method) :void {
+
+        $conn = $this->db->get();
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = :method WHERE ID = :invoice_id");
+        $stmt->bindParam(':method', $method);
         $stmt->bindParam(':invoice_id', $invoiceId);
         $stmt->execute();
     }

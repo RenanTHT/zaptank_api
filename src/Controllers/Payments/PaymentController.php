@@ -124,7 +124,7 @@ class PaymentController {
                 $invoice->updateReferenceKey($invoiceId, $referenceKey);
                 $invoice->updatePixDataImage($invoiceId, $qrcodeImageUrl);
                 $invoice->updateOrderNumber($invoiceId, $orderNumber);
-                $invoice->updateMethod($invoiceId);
+                $invoice->updateMethod($invoiceId, $method = 'PIX');
 
                 $body = json_encode([
                     'success' => true,
