@@ -20,7 +20,7 @@ class Invoice extends Model {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT * FROM Db_Center.dbo.Vip_Data WHERE ID = :invoice_id");
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ID = :invoice_id");
         $stmt->bindParam(':invoice_id', $invoiceId);
         $stmt->execute();
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -30,7 +30,7 @@ class Invoice extends Model {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT count(*) as invoiceCount FROM Db_Center.dbo.Vip_Data WHERE ID = :invoice_id and UserName = :email");
+        $stmt = $conn->prepare("SELECT count(*) as invoiceCount FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ID = :invoice_id and UserName = :email");
         $stmt->bindParam(':invoice_id', $invoiceId);
         $stmt->bindParam(':email', $email);
         $stmt->execute();

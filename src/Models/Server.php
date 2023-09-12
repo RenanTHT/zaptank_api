@@ -18,7 +18,7 @@ class Server extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT * FROM Db_Center.dbo.Server_List WHERE ID = :serverId");
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Server_List WHERE ID = :serverId");
         $stmt->bindParam(':serverId', $serverId);
         $stmt->execute();
         $serverInfo = $stmt->fetch(PDO::FETCH_ASSOC);

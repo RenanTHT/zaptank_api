@@ -328,7 +328,7 @@ class AccountConfigController {
 
                 $database = new Database;
 
-                $database->get()->query("UPDATE Db_Center.dbo.change_email SET IsChanged=1 WHERE userID = '$uid'");
+                $database->get()->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.change_email SET IsChanged=1 WHERE userID = '$uid'");
 
                 $body = json_encode([
                     'success' => true,
