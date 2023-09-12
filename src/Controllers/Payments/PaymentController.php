@@ -46,7 +46,7 @@ class PaymentController {
         
         switch($gateway) {
             case 'picpay':
-                $invoiceDetails = $invoice->selectByIdAndUser($invoiceId, $account_email);  
+                $invoiceDetails = $invoice->selectById($invoiceId);  
                 
                 $base64EncodedReference = base64_encode($invoiceId);
                 $price = $invoiceDetails['Price'];
@@ -83,7 +83,7 @@ class PaymentController {
                 }
                 break;
             case 'pagarme':
-                $invoiceDetails = $invoice->selectByIdAndUser($invoiceId, $account_email);  
+                $invoiceDetails = $invoice->selectById($invoiceId);  
 
                 $firstName = $invoiceDetails['Name'];
                 $price = str_replace(".", "", $invoiceDetails['Price']);
