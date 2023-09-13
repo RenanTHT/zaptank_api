@@ -11,7 +11,11 @@ use App\Zaptank\Models\Vip;
 use App\Zaptank\Models\Character;
 use App\Zaptank\Models\Account;
 use App\Zaptank\Models\ChargeMoney;
+
 use App\Zaptank\Services\Payments\Picpay;
+use App\Zaptank\Services\Email;
+
+use App\Zaptank\Helpers\CurlRequest;
 
 class PaymentNotificationController {
     
@@ -86,7 +90,7 @@ class PaymentNotificationController {
                     $percentage = 15;
                     $additionalCoupons = ($percentage / 100) * $coupons;
                     $coupons += $additionalCoupons;
-                    $account->updateIsFirstCharge($email);
+                    $account->updateIsFirstCharge($account_email);
                 }
 
                 $invoice->updateStatus($invoiceId, $status = 'Aprovada');
@@ -110,7 +114,18 @@ class PaymentNotificationController {
                 $body = json_encode(true);
                 $response->getBody()->write($body);
                 return $response;
+            } else {
+                $body = json_encode(false);
+                $response->getBody()->write($body);
+                return $response;
             }
+        } else if($status == 'analysis' || $status == 'refunded' || $status == 'chargeback') {
+            $file = "./logs/payments/picpay.txt";
+            file_put_contents($file, $request_status . PHP_EOL, FILE_APPEND | LOCK_EX);
+
+            $body = json_encode(false);
+            $response->getBody()->write($body);
+            return $response;
         } else {
             $body = json_encode(false);
             $response->getBody()->write($body);

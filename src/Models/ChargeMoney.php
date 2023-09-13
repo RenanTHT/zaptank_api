@@ -11,7 +11,7 @@ class ChargeMoney extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $Connect->prepare("INSERT INTO {$BaseUser}.dbo.Charge_Money(UserName, Money, Date, CanUse, PayWay, NeedMoney) VALUES(:username, :money, :date, :can_use, :method, :price)");
+        $stmt = $conn->prepare("INSERT INTO {$BaseUser}.dbo.Charge_Money(UserName, Money, Date, CanUse, PayWay, NeedMoney) VALUES(:username, :money, :date, :can_use, :method, :price)");
         $stmt->bindParam(':username', $UserName);
         $stmt->bindParam(':money', $coupons);
         $stmt->bindParam(':date', $date);

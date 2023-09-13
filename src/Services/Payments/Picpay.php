@@ -40,7 +40,7 @@ class Picpay {
         );
         
         if(curl_errno($curl)) {
-            $file = "./logs/logspicpay.txt";
+            $file = "./logs/payments/picpay.txt";
             file_put_contents($file, curl_error($curl) . PHP_EOL, FILE_APPEND | LOCK_EX);
             return;
         }
