@@ -159,7 +159,7 @@ class PaymentNotificationController {
             file_get_contents('php://input'), true
         );
 
-        if($paymentDetails['charge']['status'] === 'COMPLETED') {
+        if(isset($paymentDetails['charge']['status']) && $paymentDetails['charge']['status'] === 'COMPLETED') {
 
             $orderNumber = $paymentDetails['charge']['identifier'];
 
