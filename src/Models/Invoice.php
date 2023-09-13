@@ -113,12 +113,30 @@ class Invoice extends Model {
         $stmt->execute();
     }
 
+    public function updateStatusByOrderNumber($orderNumber, $status) :void {
+
+        $conn = $this->db->get();
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Status = :status WHERE OrderNum = :order_number");
+        $stmt->bindParam(':status', $status);
+        $stmt->bindParam(':order_number', $orderNumber);
+        $stmt->execute();
+    }
+
     public function updateMethodByInvoiceId($invoiceId, $method) :void {
 
         $conn = $this->db->get();
         $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = :method WHERE ID = :invoice_id");
         $stmt->bindParam(':method', $method);
         $stmt->bindParam(':invoice_id', $invoiceId);
+        $stmt->execute();
+    }
+    
+    public function updateMethodByOrderNumber($orderNumber, $method) :void {
+
+        $conn = $this->db->get();
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = :method WHERE OrderNum = :order_number");
+        $stmt->bindParam(':method', $method);
+        $stmt->bindParam(':order_number', $orderNumber);
         $stmt->execute();
     }
 }
