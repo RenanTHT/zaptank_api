@@ -25,6 +25,16 @@ class Invoice extends Model {
         $stmt->execute();
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    public function selectByOrderNumber($orderNumber) {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE OrderNum = :order_number");
+        $stmt->bindParam(':order_number', $orderNumber);
+        $stmt->execute();
+        return $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function selectInvoiceCountByIdAndUser($invoiceId, $email) {
         
@@ -94,7 +104,7 @@ class Invoice extends Model {
         $stmt->execute();
     }
     
-    public function updateStatus($invoiceId, $status) :void {
+    public function updateStatusByInvoiceId($invoiceId, $status) :void {
 
         $conn = $this->db->get();
         $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Status = :status WHERE ID = :invoice_id");
@@ -103,7 +113,7 @@ class Invoice extends Model {
         $stmt->execute();
     }
 
-    public function updateMethod($invoiceId, $method) :void {
+    public function updateMethodByInvoiceId($invoiceId, $method) :void {
 
         $conn = $this->db->get();
         $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = :method WHERE ID = :invoice_id");
