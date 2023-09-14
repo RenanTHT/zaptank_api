@@ -32,6 +32,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changenotverified', [AccountConfigController::class, 'changeEmailNotVerified']);
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
+    
+    $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
 

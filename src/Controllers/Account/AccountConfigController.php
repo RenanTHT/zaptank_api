@@ -341,4 +341,24 @@ class AccountConfigController {
         $response->getBody()->write($body);
         return $response;
     }
+
+    public function checkIfEmailIsVerified(Request $request, Response $response) :Response {
+
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->decode($jwt);
+
+        $account_email = $payload['email'];
+
+        $account = new Account;
+        $user = $account->selectByEmail($account_email);
+
+        $body = json_encode([
+            'email_is_verified' => boolval($user['VerifiedEmail'])
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
 }
