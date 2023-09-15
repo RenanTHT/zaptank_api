@@ -19,6 +19,7 @@ use App\Zaptank\Controllers\Character\CharacterController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\RankController;
 use App\Zaptank\Controllers\InvoiceController;
+use App\Zaptank\Controllers\BackpackController;
 use App\Zaptank\Controllers\TicketController;
 use App\Zaptank\Controllers\Payments\PaymentController;
 use App\Zaptank\Controllers\Payments\PaymentNotificationController;
@@ -48,6 +49,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
         $group->post('/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
 
     })->add(new checkIfServerSuvParameterIsInvalid);
+
+    $group->get('backpack/list/{suv}', [BackpackController::class, 'listItems'])->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->group('invoice', function(RouteCollectorProxy $group){
         $group->post('/new/{suv}', [InvoiceController::class, 'new']);
