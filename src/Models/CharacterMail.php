@@ -7,7 +7,7 @@ use \PDO;
 
 class CharacterMail extends Model {
     
-    public function SP_Admin_SendUserItem($characterId, $nickName, $templateId, $count, $BaseUser = 'Db_Tank_102') {
+    public function SP_Admin_SendUserItem($characterId, $nickName, $templateId, $count, $BaseUser) {
 
         $conn = $this->db->get();
 

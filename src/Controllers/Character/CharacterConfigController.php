@@ -171,7 +171,7 @@ class CharacterConfigController {
         $templateId = $rewardInfo['TemplateID'];
         $count = $rewardInfo['Count'];
         
-        $characterMail->SP_Admin_SendUserItem($characterId, $characterNickname, $templateId, $count);
+        $characterMail->SP_Admin_SendUserItem($characterId, $characterNickname, $templateId, $count, $baseUser);
         $gift->StoreUserRewardCollectionRecord($account_email, $count, $giftCode);
 
         CurlRequest::post("{$server->questUrl}/UpdateMailByUserID.ashx?UserID=$characterId&AreaID={$server->areaId}&key=TqUserZap777");
