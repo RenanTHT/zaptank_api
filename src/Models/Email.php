@@ -22,7 +22,7 @@ class Email extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.change_email WHERE UserId = :id ORDER BY Date DESC");
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.change_email WHERE userID = :id ORDER BY Date DESC");
         $stmt->bindParam(':id', $userId);
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
