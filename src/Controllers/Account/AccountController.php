@@ -11,9 +11,12 @@ use App\Zaptank\Models\Email as EmailModel;
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 
+use App\Zaptank\Helpers\RequestLimiter;
+use App\Zaptank\Helpers\IpAdress;
+
 class AccountController {
 
-    public function new(Request $request, Response $response) {
+    public function new(Request $request, Response $response, array $args) :Response {
 
         $email             = $_POST['email'];
         $password          = strtoupper(md5($_POST['password']));
@@ -110,5 +113,44 @@ class AccountController {
 
         $response->getBody()->write($body);
         return $response->withHeader('Content-Type', 'application/json');
+    }
+
+    public function recoverPassword(Request $request, Response $response, array $args) :Response {
+
+        $requestLimiter = new RequestLimiter(IpAdress::getUserIp());
+        $remainingTime = $requestLimiter->limitPasswordRecoveryRequests();
+
+        if($remainingTime > 0) {
+            $body = json_encode([
+                'success' => false,
+                'message' => "Aguarde {$remainingTime} segundos antes de fazer outra solicitação.",
+                'status_code' => 'many_requests'
+            ]); 
+
+            $response->getBody()->write($body);
+            return $response;
+        }
+        
+        $requestLimiter->addRequestInformation(IpAdress::getUserIp(), 'last_password_recovery_time');
+
+        if(empty(trim($_POST['email']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'preencha todos os campos.',
+                'status_code' => 'empty_fields'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
+        $body = json_encode([
+            'success' => true,
+            'message' => 'Email enviado com sucesso, caso não encontre nenhum email verifique o SPAM.',
+            'status_code' => 'password_recover_email_sent'
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
     }
 }
