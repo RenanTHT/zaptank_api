@@ -34,8 +34,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
 
-    $group->post('account/password/recover', [AccountController::class, 'recoverPassword']);
-
     $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
@@ -81,5 +79,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
 $app->post('/payment/notification/picpay', [PaymentNotificationController::class, 'picpayNotification']);
 $app->post('/payment/notification/pagarme', [PaymentNotificationController::class, 'pagarmeNotification']);
 
-$app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/auth/login', [AuthController::class, 'make']);
+$app->post('/account/new', [AccountController::class, 'new']);
+$app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);

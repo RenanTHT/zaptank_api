@@ -9,8 +9,8 @@ date_default_timezone_set('America/Sao_Paulo');
 
 class Date {
 
-    public static function getDate() :string {
-        return date('Y-m-d H:i:s');
+    public static function getDate($pattern = 'Y-m-d H:i:s') :string {
+        return date($pattern);
     }
 
     public static function difference($start, $end) :DateInterval {

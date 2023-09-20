@@ -23,8 +23,8 @@ class RequestLimiter {
         $this->timeInSecondsForPasswordRecoverRequest = $_ENV['INTERVAL_IN_SECONDS_FOR_PASSWORD_RECOVERY'];
     }
 
-    public function addRequestInformation($ip, $request) {
-        $_SESSION[$ip][$request] = Time::get();
+    public function addRequestInformation($ip, $request, $time) {
+        $_SESSION[$ip][$request] = $time;
     }
 
     public function limitPasswordRecoveryRequests() {
