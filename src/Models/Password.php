@@ -16,6 +16,16 @@ class Password extends Model {
         $stmt->execute();
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function selectFromPasswordResetTableWithToken($token) {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.reset_password WHERE reset_token = :token");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
     public function storeRecoverPasswordRequest($userId, $token, $date) :void {
 
@@ -35,6 +45,15 @@ class Password extends Model {
         $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.reset_password SET data = :date WHERE userID = :userID");
         $stmt->bindParam(':date', $date);
         $stmt->bindParam(':userID', $userId);
+        $stmt->execute();
+    }
+    
+    public function updatePasswordRecoveryRequestStatusWithToken($token) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.reset_password SET active = 0 WHERE reset_token = :token");
+        $stmt->bindParam(':token', $token);
         $stmt->execute();
     }
 }

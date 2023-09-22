@@ -28,6 +28,15 @@ class Account extends Model {
         return (!empty($result)) ? $result: [];
     }
 
+    public function selectById(int $userId) {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT UserId, IsBanned, VerifiedEmail, Email, Telefone, Opinion, IsFirstCharge FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE UserId = :user_id");
+		$stmt->bindParam(':user_id', $userId);
+		$stmt->execute();		
+        return $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function selectByEmail(string $email) {
 

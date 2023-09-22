@@ -33,7 +33,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changenotverified', [AccountConfigController::class, 'changeEmailNotVerified']);
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
-
     $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
@@ -50,21 +49,19 @@ $app->group('/', function(RouteCollectorProxy $group) {
 
     })->add(new checkIfServerSuvParameterIsInvalid);
 
-    $group->get('backpack/list/{suv}', [VirtualBagController::class, 'listItems'])->add(new checkIfServerSuvParameterIsInvalid);
-    $group->post('backpack/item/send/{suv}', [VirtualBagController::class, 'sendItem'])->add(new checkIfServerSuvParameterIsInvalid);
-
-    $group->group('invoice', function(RouteCollectorProxy $group){
-        $group->post('/new/{suv}', [InvoiceController::class, 'new']);
+    $group->group('backpack', function(RouteCollectorProxy $group) {
+        $group->get('/list/{suv}', [VirtualBagController::class, 'listItems']);
+        $group->post('/item/send/{suv}', [VirtualBagController::class, 'sendItem']);
     })->add(new checkIfServerSuvParameterIsInvalid);
+
+    $group->post('invoice/new/{suv}', [InvoiceController::class, 'new'])->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->group('ticket', function(RouteCollectorProxy $group) {
         $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
     })->add(new checkIfServerSuvParameterIsInvalid);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
-
     $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
-
     $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment'])->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->group('rank', function(RouteCollectorProxy $group) {
@@ -81,4 +78,7 @@ $app->post('/payment/notification/pagarme', [PaymentNotificationController::clas
 
 $app->post('/auth/login', [AuthController::class, 'make']);
 $app->post('/account/new', [AccountController::class, 'new']);
+
+$app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
+$app->get('/account/password/recover/token/check/{token}', [AccountController::class, 'checkResetPasswordToken']);
