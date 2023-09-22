@@ -18,9 +18,8 @@ use App\Zaptank\Helpers\Date;
 
 class AccountConfigController {
     
-    public function changePhone(Request $request, Response $response) : Response {
+    public function changePhone(Request $request, Response $response, array $args) : Response {
 
-        $phone = $_POST['phone'];
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
@@ -28,13 +27,20 @@ class AccountConfigController {
 
         $uid = $payload['sub'];
 
-        if(empty($phone)) {
+        if(!isset($_POST['phone']) || empty(trim($_POST['phone']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'preencha todos os campos.',
                 'status_code' => 'empty_fields'
             ]);
-        } else if(strlen($phone) < 19) {
+
+            $response->getBody()->write($body);
+            return $response;
+        } 
+        
+        $phone = $_POST['phone'];
+
+        if(strlen($phone) < 19) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Por favor, preencha o número de telefone corretamente.',
@@ -60,35 +66,29 @@ class AccountConfigController {
             }
         }
 
-        /*
-        $file = fopen('log.txt', 'a');
-        fwrite($file, date('d/m/Y H:i:s') . "\n");
-        fclose($file);
-        */
-        
         $response->getBody()->write($body);
         return $response;
     }
 
 
-    public function changePassword(Request $request, Response $response) : Response {
+    public function changePassword(Request $request, Response $response, array $args) : Response {
 
-        $oldpass = md5($_POST['oldpass']);
-        $newpass = md5($_POST['newpass']);
-
-        if(empty($oldpass)) {
+        if(!isset($_POST['oldpass']) || empty(trim($_POST['oldpass']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não informou a senha antiga.',
                 'status_code' => 'empty_oldpass'
             ]);
-        } else if(empty($newpass)) {
+        } else if(!isset($_POST['newpass']) || empty(trim($_POST['newpass']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não informou a nova senha.',
                 'status_code' => 'empty_oldpass'
             ]);            
-        } else {
+        } else {           
+            $oldpass = md5($_POST['oldpass']);
+            $newpass = md5($_POST['newpass']);
+
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
             $token = new Token;
@@ -154,18 +154,18 @@ class AccountConfigController {
         return $response;
     }
 
-    public function changeEmailNotVerified(Request $request, Response $response) :Response {
+    public function changeEmailNotVerified(Request $request, Response $response, array $args) :Response {
         
-        $current_email = $_POST['current_email'];
-        $new_email = $_POST['new_email'];
-    
-        if(empty($current_email) || empty($new_email)) {
+        if((!isset($_POST['current_email']) || empty(trim($_POST['current_email']))) || (!isset($_POST['new_email']) || empty(trim($_POST['new_email'])))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não preencheu todos os campos solicitados.',
                 'status_code' => 'empty_fields'
             ]);
         } else {
+            $current_email = $_POST['current_email'];
+            $new_email = $_POST['new_email'];
+
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
             $token = new Token;
@@ -209,10 +209,20 @@ class AccountConfigController {
         return $response;
     }    
     
-    public function saveEmailChangeRequest(Request $request, Response $response) :Response {
+    public function saveEmailChangeRequest(Request $request, Response $response, array $args) :Response {
+
+        if(!isset($_POST['email']) || empty(trim($_POST['email']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O e-mail deve ser informado.',
+                'status_code' => 'empty_fields'
+            ]);
+
+            $response->getBody()->write($body);
+            return $response;
+        } 
 
         $email = $_POST['email'];
-
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
@@ -221,13 +231,7 @@ class AccountConfigController {
         $uid = $payload['sub']; 
         $account_email = $payload['email'];
 
-        if(empty($email)) {
-            $body = json_encode([
-                'success' => false,
-                'message' => 'O e-mail deve ser informado.',
-                'status_code' => 'empty_fields'
-            ]);
-        } else if($email != $account_email) {
+        if($email != $account_email) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'O e-mail informado é inválido e não está associado a conta.',
@@ -341,17 +345,17 @@ class AccountConfigController {
         return $response;
     }
 
-    public function changeEmail(Request $request, Response $response) :Response {
+    public function changeEmail(Request $request, Response $response, array $args) :Response {
 
-        $new_email = $_POST['new_email'];
-
-        if(empty($new_email)) {
+        if(!isset($_POST['new_email']) || empty(trim($_POST['new_email']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você deve informar o novo e-mail.',
                 'status_code' => 'empty_fields'
             ]);
         } else {
+            $new_email = $_POST['new_email'];
+
             $account = new Account; 
 
             if(!empty($account->selectByEmail($new_email))) {

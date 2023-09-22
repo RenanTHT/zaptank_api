@@ -15,7 +15,12 @@ class InvoiceController {
 
     public function new(Request $request, Response $response, array $args) :Response {
 
-        if(empty($_POST['full_name']) || empty($_POST['phone']) || empty($_POST['email']) || empty($_POST['vip_package'])) {
+        if (
+            (!isset($_POST['full_name']) || empty(trim($_POST['full_name']))) ||
+            (!isset($_POST['phone']) || empty(trim($_POST['phone']))) ||
+            (!isset($_POST['email']) || empty(trim($_POST['email']))) ||
+            (!isset($_POST['vip_package']) || empty(trim($_POST['vip_package'])))
+        ) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'preencha todos os campos.',

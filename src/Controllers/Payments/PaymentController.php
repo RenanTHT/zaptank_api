@@ -20,6 +20,18 @@ class PaymentController {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $gateway = $args['gateway'];
+
+        if(!isset($_POST['invoice_id']) || empty(trim($_POST['invoice_id']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Erro interno, parâmetro de requisição invoice_id não foi informado.',
+                'status_code' => 'unknow_invoice'
+            ]);
+
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         $encryptedInvoiceId = $_POST['invoice_id'];
 
         $cryptography = new Cryptography;

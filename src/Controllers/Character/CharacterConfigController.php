@@ -18,8 +18,19 @@ use App\Zaptank\Helpers\Cryptography;
 
 class CharacterConfigController {
 
-    public function changenick(Request $request, Response $response) :Response {
+    public function changenick(Request $request, Response $response, array $args) :Response {
         
+        if(!isset($_POST['newnick']) || empty(trim($_POST['newnick']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Preencha o nome do personagem.',
+                'status_code' => 'empty_fields'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         $new_nick = $_POST['newnick'];
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
@@ -80,9 +91,9 @@ class CharacterConfigController {
     }
 
 
-    public function clearbag(Request $request, Response $response) :Response {
+    public function clearbag(Request $request, Response $response, array $args) :Response {
 
-        if(empty($_POST['password'])) {
+        if(!isset($_POST['password']) || empty(trim($_POST['password']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'A confirmação da senha está vazio.',
@@ -143,6 +154,17 @@ class CharacterConfigController {
 
 
     public function redeemGiftCode(Request $request, Response $response, array $args) :Response {
+
+        if (!isset($_POST['giftcode']) || empty(trim($_POST['giftcode']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O código de presente deve ser informado',
+                'status_code' => 'empty_giftcode'
+            ]); 
+            
+            $response->getBody()->write($body);
+            return $response;
+        }
 
         $suv = $args['suv'];
         $giftCode = strtoupper($_POST['giftcode']);

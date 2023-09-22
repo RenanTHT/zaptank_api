@@ -40,7 +40,7 @@ class TicketController {
             return $response;
         }
 
-        if((!isset($_POST['subject']) || !isset($_POST['description']) || !isset($_POST['phone'])) || (empty($_POST['subject']) || empty($_POST['description']) || empty($_POST['phone']))) {
+        if((!isset($_POST['subject']) || !isset($_POST['description']) || !isset($_POST['phone'])) || (empty(trim($_POST['subject'])) || empty(trim($_POST['description'])) || empty(trim($_POST['phone'])))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não preencheu todos os campos solicitados.',

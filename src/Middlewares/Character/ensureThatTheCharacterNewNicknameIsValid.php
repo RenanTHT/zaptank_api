@@ -10,9 +10,7 @@ class ensureThatTheCharacterNewNicknameIsValid {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 
-        $new_nickname = $_POST['newnick'];
-
-        if(empty($new_nickname)) {
+        if(!isset($_POST['newnick']) || empty(trim($_POST['newnick']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não digitou o nome do personagem.',
@@ -24,6 +22,8 @@ class ensureThatTheCharacterNewNicknameIsValid {
             return $response; 
         }
     
+        $new_nickname = $_POST['newnick'];
+
         $specialChars = array(".", ",", "?", "!", "'", "\\", ":", "(", ")", "/", '"', ";", "-", "+", "<", ">", "%", "~", "€", "$", "[", "]", "{", "}", "@", "&", "#", "*", "„");
         if(strpbrk($new_nickname, implode('', $specialChars))) {
             $body = json_encode([

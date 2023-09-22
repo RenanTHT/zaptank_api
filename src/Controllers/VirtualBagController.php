@@ -82,7 +82,7 @@ class VirtualBagController {
 
     public function sendItem(Request $request, Response $response, array $args) :Response {
 
-        if((!isset($_POST['questi']) || empty($_POST['questi'])) || (!isset($_POST['questii']) || empty($_POST['questii']))) {
+        if((!isset($_POST['questi']) || empty(trim($_POST['questi']))) || (!isset($_POST['questii']) || empty(trim($_POST['questii'])))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Parâmetros inválidos.',

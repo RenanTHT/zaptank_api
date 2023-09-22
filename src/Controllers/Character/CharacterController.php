@@ -14,10 +14,24 @@ class CharacterController {
 
     public function new(Request $request, Response $response, array $args) :Response {
 
-        $suv = $args['suv'];
+        if (
+            (!isset($_POST['nickname']) || empty(trim($_POST['nickname']))) ||
+            (!isset($_POST['gender']) || trim($_POST['gender']) == '')
+        ) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'preencha todos os campos.',
+                'status_code' => 'empty_fields'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
 
         $nickname = $_POST['nickname'];
         $gender = $_POST['gender'];
+
+        $suv = $args['suv'];
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;

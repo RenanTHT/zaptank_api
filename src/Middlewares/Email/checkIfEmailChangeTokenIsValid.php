@@ -14,9 +14,7 @@ class checkIfEmailChangeTokenIsValid {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 
-        $token = $_POST['token'];
-
-        if(empty($token)) {
+        if(!isset($_POST['token']) || empty(trim($_POST['token']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'O token deve ser informado.',
@@ -27,6 +25,8 @@ class checkIfEmailChangeTokenIsValid {
             $response->getBody()->write($body);
             return $response;
         } else {
+            $token = $_POST['token'];
+
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
             $tokenService = new Token;

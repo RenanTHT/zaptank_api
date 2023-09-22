@@ -13,6 +13,18 @@ class checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser {
 
     public function __invoke(Request $request, RequestHandler $handler) :Response {
 
+        if(!isset($_POST['giftcode']) || empty(trim($_POST['giftcode']))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O código de presente deve ser informado',
+                'status_code' => 'empty_giftcode'
+            ]); 
+            
+            $response = new Response();
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         $giftCode = strtoupper($_POST['giftcode']);
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 

@@ -12,6 +12,17 @@ class AuthController {
 
     public function make(Request $request, Response $response) :Response {
 
+        if((!isset($_POST['email']) || empty(trim($_POST['email']))) || (!isset($_POST['password']) || empty(trim($_POST['password'])))) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'preencha todos os campos.',
+                'status_code' => 'empty_fields'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         $email = $_POST['email'];
         $password = strtoupper(md5($_POST['password']));
 

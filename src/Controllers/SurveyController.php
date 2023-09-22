@@ -44,7 +44,7 @@ class SurveyController {
             return $response;
         }
 
-        if(!isset($_POST['method']) || empty($_POST['method'])) {
+        if(!isset($_POST['method']) || empty(trim($_POST['method']))) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Você não preencheu todos os campos solicitados.',
