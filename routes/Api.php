@@ -25,6 +25,7 @@ use App\Zaptank\Controllers\Payments\PaymentController;
 use App\Zaptank\Controllers\Payments\PaymentNotificationController;
 use App\Zaptank\Controllers\Server\ServerController;
 use App\Zaptank\Controllers\SurveyController;
+use App\Zaptank\Controllers\EmailController;
 
 $app->group('/', function(RouteCollectorProxy $group) {
 
@@ -82,3 +83,5 @@ $app->post('/account/new', [AccountController::class, 'new']);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
 $app->get('/account/password/recover/token/check/{token}', [AccountController::class, 'checkResetPasswordToken']);
+
+$app->post('/unsubscribemaillist/{email_token}', [EmailController::class, 'unsubscribe']);

@@ -132,4 +132,26 @@ class Account extends Model {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
     }
+    
+    
+    public function updateBadMail($email, $badMail) :void {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET BadMail = :bad_mail WHERE Email = :email");
+        $stmt->bindParam(':bad_mail', $badMail);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+    }
+    
+    
+    public function updateVerifiedEmail($email, $verifiedEmail) :void {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET VerifiedEmail = :verified_email WHERE Email = :email");
+        $stmt->bindParam(':verified_email', $verifiedEmail);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+    }
 }
