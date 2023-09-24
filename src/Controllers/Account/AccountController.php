@@ -79,10 +79,11 @@ class AccountController {
     
                     $token = new Token;
     
-                    $jwt_authentication_hash = $token->generateAuthenticationToken($payload = [
+                    $jwt_authentication_hash = $token->createJWT($payload = [
                         'sub' => $uid,
                         'email' => $email,
-                        'phone' => $phone
+                        'phone' => $phone,
+                        'exp' => Time::getTimestamp() + $_ENV['LOGIN_EXPIRATION_TIME_IN_SECONDS']
                     ]);
     
                     $activation_token = md5(time());

@@ -13,6 +13,10 @@ class Time {
         return date('H:i:s', time());
     }
 
+    public static function getTimestamp() {
+        return time();
+    }
+
     public static function differenceInSecondsBetweenTwoHours($start, $end) {
 
         $startTimestamp = strtotime($start);

@@ -17,7 +17,7 @@ class Token {
         $this->public_key = $_ENV['PUBLIC_KEY'];
     }
 
-    public function generateAuthenticationToken(array $payload) :string {
+    public function createJWT(array $payload) :string {
 
         $jwt = JWT::encode($payload, $this->private_key, 'HS256'); 
 

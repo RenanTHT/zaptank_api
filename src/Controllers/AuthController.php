@@ -7,6 +7,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
 
 use App\Zaptank\Models\Account;
 use App\Zaptank\Services\Token;
+use App\Zaptank\Helpers\Time;
 
 class AuthController {
 
@@ -53,10 +54,11 @@ class AuthController {
 
                     $token = new Token;
 
-                    $jwt_hash = $token->generateAuthenticationToken($payload = [
+                    $jwt_hash = $token->createJWT($payload = [
                         'sub' => $uid,
                         'email' => $email,
-                        'phone' => $phone
+                        'phone' => $phone,
+                        'exp' => Time::getTimestamp() + $_ENV['LOGIN_EXPIRATION_TIME_IN_SECONDS']
                     ]);
 
                     $body = [
