@@ -86,8 +86,10 @@ class AccountController {
                         'exp' => Time::getTimestamp() + $_ENV['LOGIN_EXPIRATION_TIME_IN_SECONDS']
                     ]);
     
+                    $cryptography = new Cryptography;
+
                     $activation_token = md5(time());
-                    $EncMail = $email;
+                    $EncMail = $cryptography->EncryptText($email);
     
                     $emailModel = new EmailModel;
                     $emailModel->insertEmailActivationToken($uid, $activation_token, $data = date('Y-m-d H:i:s'));
