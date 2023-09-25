@@ -92,7 +92,7 @@ class AccountController {
                     $EncMail = $cryptography->EncryptText($email);
     
                     $emailModel = new EmailModel;
-                    $emailModel->insertEmailActivationToken($uid, $activation_token, $data = date('Y-m-d H:i:s'));
+                    $emailModel->insertEmailActivationToken($uid, $activation_token, $data = Date::getDate());
     
                     $emailService = new Email;
                     
