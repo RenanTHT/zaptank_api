@@ -80,6 +80,7 @@ $app->post('/payment/notification/pagarme', [PaymentNotificationController::clas
 $app->post('/auth/login', [AuthController::class, 'make']);
 $app->post('/account/new', [AccountController::class, 'new']);
 
+$app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
 $app->get('/account/password/recover/token/check/{token}', [AccountController::class, 'checkResetPasswordToken']);

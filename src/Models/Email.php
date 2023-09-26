@@ -11,11 +11,30 @@ class Email extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, Date) VALUES(:userID, :token, CONVERT(datetime, :date, 121))");
+        $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, active, Date) VALUES(:userID, :token, 1, CONVERT(datetime, :date, 121))");
         $stmt->bindParam(':userID', $userId);
         $stmt->bindParam(':token', $token);
         $stmt->bindParam(':date', $data);
         $stmt->execute();        
+    }
+
+    public function selectEmailActivationRecordWithToken($activationToken) {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.activate_email WHERE token = :token");
+        $stmt->bindParam(':token', $activationToken);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    public function deleteEmailActivationRecordWithToken($activationToken) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("DELETE FROM {$_ENV['BASE_SERVER']}.dbo.activate_email WHERE token = :token");
+        $stmt->bindParam(':token', $activationToken);
+        $stmt->execute();
     }
 
     public function selectEmailChangeRequest(int $userId) {
