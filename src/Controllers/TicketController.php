@@ -230,4 +230,88 @@ class TicketController {
         $response->getBody()->write($body);
         return $response;
     }
+
+    public function evaluateService(Request $request, Response $response, array $args) :Response {
+
+        if (
+            (!isset($_POST['rating']) || empty(trim($_POST['rating']))) ||
+            (!isset($_POST['text']) || empty(trim($_POST['text'])))
+        ) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Você não preencheu todos os campos solicitados.',
+                'status_code' => 'empty_fields'
+            ]);
+        
+            $response->getBody()->write($body);
+            return $response;
+        }
+        
+        $encryptedTicketId = $args['reference'];
+        $rating = $_POST['rating'];
+        $text = $_POST['text'];
+        
+        $cryptography = new Cryptography;
+        $ticketId = $cryptography->DecryptText($encryptedTicketId);
+
+        $ticket = new Ticket;
+        $ticketDetails = $ticket->selectById($ticketId);
+        
+        if($ticketDetails['IsEvaluation'] == 1) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Não foi possível concluir a avaliação para esse ticket ele já foi avaliado.',
+                'status_code' => 'already_evaluated'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
+        $ticket->updateEvaluationStars($ticketId, $rating);
+        $ticket->updateEvaluationText($ticketId, $text);
+        $ticket->updateIsEvaluation($ticketId, $isEvaluation = 1);
+
+        $body = json_encode([
+            'success' => true,
+            'message' => 'Valeu :) obrigado(a) pelo seu feedback!',
+            'status_code' => 'feedback_sent',
+            'data' => $ticketDetails
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
+
+    public function getDetails(Request $request, Response $response, array $args) :Response {
+
+        $encryptedTicketId = $args['reference'];
+
+        $cryptography = new Cryptography;
+        $ticketId = $cryptography->DecryptText($encryptedTicketId);
+
+        $ticket = new Ticket;
+        $ticketDetails = $ticket->selectById($ticketId);
+        
+        if(empty($ticketDetails)) {
+            $body = json_encode([
+                'reference_is_valid' => false,
+                'is_evaluation' => false
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        } else {
+
+            $isEvaluation = $ticketDetails['IsEvaluation'];
+    
+            $body = json_encode([
+                'reference_is_valid' => true,
+                'is_evaluation' => $isEvaluation
+            ]);
+
+            $response->getBody()->write($body);
+            return $response;
+        }
+    }
 }

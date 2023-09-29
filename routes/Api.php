@@ -65,6 +65,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
         $group->post('/close/{suv}', [TicketController::class, 'close'])->add(new checkIfTheUserDoesNotHaveAdministratorPermissions);
     })->add(new checkIfServerSuvParameterIsInvalid);
     
+    $group->post('ticket/evaluate/{reference}', [TicketController::class, 'evaluateService']);
+    $group->get('ticket/details/{reference}', [TicketController::class, 'getDetails']);
+    
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
     $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
     $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment'])->add(new checkIfServerSuvParameterIsInvalid);

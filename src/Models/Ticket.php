@@ -60,4 +60,34 @@ class Ticket extends Model {
         $stmt->bindParam(':ticket_id', $ticketId);
         $stmt->execute();
     }
+
+    public function updateEvaluationStars($ticketId, $rating) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Tickets SET EvaluationStars = :rating WHERE ID = :ticket_id");
+        $stmt->bindParam(':rating', $rating);
+        $stmt->bindParam(':ticket_id', $ticketId);
+        $stmt->execute();
+    }
+    
+    public function updateEvaluationText($ticketId, $text) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Tickets SET EvaluationText = :text WHERE ID = :ticket_id");
+        $stmt->bindParam(':text', $text);
+        $stmt->bindParam(':ticket_id', $ticketId);
+        $stmt->execute();
+    }
+    
+    public function updateIsEvaluation($ticketId, $isEvaluation) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Tickets SET IsEvaluation = :is_evaluation WHERE ID = :ticket_id");
+        $stmt->bindParam(':is_evaluation', $isEvaluation);
+        $stmt->bindParam(':ticket_id', $ticketId);
+        $stmt->execute();
+    }
 }
