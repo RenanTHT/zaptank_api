@@ -3,6 +3,7 @@
 use Slim\Routing\RouteCollectorProxy;
 
 use App\Zaptank\Middlewares\Account\checksIfAccountEmailIsNotVerified;
+use App\Zaptank\Middlewares\Account\checkIfTheUserDoesNotHaveAdministratorPermissions;
 use App\Zaptank\Middlewares\Auth\ensureJwtAuthTokenIsValid;
 use App\Zaptank\Middlewares\Email\checkIfEmailChangeTokenIsValid;
 use App\Zaptank\Middlewares\Character\ensureThatTheCharacterNewNicknameIsValid;
@@ -13,6 +14,7 @@ use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasCreated;
 
 use App\Zaptank\Controllers\AuthController;
+use App\Zaptank\Controllers\AdminController;
 use App\Zaptank\Controllers\Account\AccountController;
 use App\Zaptank\Controllers\Account\AccountConfigController;
 use App\Zaptank\Controllers\Character\CharacterController;
@@ -59,6 +61,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
 
     $group->group('ticket', function(RouteCollectorProxy $group) {
         $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
+        $group->get('/list/{suv}', [TicketController::class, 'list']);
+        $group->post('/close/{suv}', [TicketController::class, 'close'])->add(new checkIfTheUserDoesNotHaveAdministratorPermissions);
     })->add(new checkIfServerSuvParameterIsInvalid);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
@@ -71,6 +75,8 @@ $app->group('/', function(RouteCollectorProxy $group) {
         $group->get('/poder/list/{suv}', [RankController::class, 'listRankPoder']);
         $group->get('/pvp/list/{suv}', [RankController::class, 'listRankPvp']);
     })->add(new checkIfServerSuvParameterIsInvalid);
+
+    $group->get('admin/check_permission', [AdminController::class, 'checkPermission']);
 
 })->add(new ensureJwtAuthTokenIsValid);
 
