@@ -60,8 +60,10 @@ $app->group('/', function(RouteCollectorProxy $group) {
 
     $group->post('invoice/new/{suv}', [InvoiceController::class, 'new'])->add(new checkIfServerSuvParameterIsInvalid);
     
-    $group->get('chargeback/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
-    $group->post('chargeback/collect/{suv}', [RechargeController::class, 'collectChargeback']);
+    $group->group('chargeback', function(RouteCollectorProxy $group) {
+        $group->get('/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
+        $group->post('/collect/{suv}', [RechargeController::class, 'collectChargeback']);
+    })->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);
 
     $group->group('ticket', function(RouteCollectorProxy $group) {
         $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
