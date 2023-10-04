@@ -25,6 +25,29 @@ class Invoice extends Model {
         $stmt->execute();
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function selectBy_ServerId_And_Email($serverId, $email) {
+
+        $conn = $this->db->get();
+        
+        $stmt = $conn->prepare("SELECT ID as id, Date as recharge_date, Price as price FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ServerID = :server_id and UserName = :email and Status = 'Aprovada' and IsChargeBack = 1");
+        $stmt->bindParam(':server_id', $serverId);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
+    public function selectBy_ServerId_InvoiceId_And_Email($serverId, $invoiceId, $email) {
+
+        $conn = $this->db->get();
+        
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ID = :invoice_id and ServerID = :server_id and UserName = :email and Status = 'Aprovada' and IsChargeBack = 1");
+        $stmt->bindParam(':invoice_id', $invoiceId);
+        $stmt->bindParam(':server_id', $serverId);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
     
     public function selectByOrderNumber($orderNumber) {
         
@@ -137,6 +160,14 @@ class Invoice extends Model {
         $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET Method = :method WHERE OrderNum = :order_number");
         $stmt->bindParam(':method', $method);
         $stmt->bindParam(':order_number', $orderNumber);
+        $stmt->execute();
+    }
+    
+    public function updateIsChargebackToFalse($invoiceId) :void {
+
+        $conn = $this->db->get();
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Vip_Data SET IsChargeBack = '0' WHERE ID = :invoice_id and Status = 'Aprovada' and IsChargeBack = 1");
+        $stmt->bindParam(':invoice_id', $invoiceId);
         $stmt->execute();
     }
 }

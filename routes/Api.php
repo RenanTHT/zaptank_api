@@ -21,6 +21,7 @@ use App\Zaptank\Controllers\Character\CharacterController;
 use App\Zaptank\Controllers\Character\CharacterConfigController;
 use App\Zaptank\Controllers\RankController;
 use App\Zaptank\Controllers\InvoiceController;
+use App\Zaptank\Controllers\RechargeController;
 use App\Zaptank\Controllers\VirtualBagController;
 use App\Zaptank\Controllers\TicketController;
 use App\Zaptank\Controllers\Payments\PaymentController;
@@ -58,6 +59,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
     })->add(new checkIfServerSuvParameterIsInvalid);
 
     $group->post('invoice/new/{suv}', [InvoiceController::class, 'new'])->add(new checkIfServerSuvParameterIsInvalid);
+    
+    $group->get('chargeback/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
+    $group->post('chargeback/collect/{suv}', [RechargeController::class, 'collectChargeback']);
 
     $group->group('ticket', function(RouteCollectorProxy $group) {
         $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
