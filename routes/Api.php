@@ -58,7 +58,10 @@ $app->group('/', function(RouteCollectorProxy $group) {
         $group->post('/item/send/{suv}', [VirtualBagController::class, 'sendItem']);
     })->add(new checkIfServerSuvParameterIsInvalid);
 
-    $group->post('invoice/new/{suv}', [InvoiceController::class, 'new'])->add(new checkIfServerSuvParameterIsInvalid);
+    $group->group('invoice', function(RouteCollectorProxy $group) {
+        $group->post('/new/{suv}', [InvoiceController::class, 'new']);
+        $group->get('/details/{suv}', [InvoiceController::class, 'get']);
+    })->add(new checkIfServerSuvParameterIsInvalid);
     
     $group->group('chargeback', function(RouteCollectorProxy $group) {
         $group->get('/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);

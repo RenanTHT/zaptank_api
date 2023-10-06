@@ -26,6 +26,17 @@ class Invoice extends Model {
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function selectBy_InvoiceId_And_Email($invoiceId, $email) {
+        
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ID = :invoice_id and UserName = :email");
+        $stmt->bindParam(':invoice_id', $invoiceId);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        return $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function selectBy_ServerId_And_Email($serverId, $email) {
 
         $conn = $this->db->get();
