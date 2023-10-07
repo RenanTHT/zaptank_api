@@ -78,6 +78,12 @@ class PaymentController {
         
                     $body = json_encode([
                         'success' => true,
+                        'data' => [
+                            'picpay' => [
+                                'picpay_link' => $picpayLink,
+                                'picpay_qr_code' => $picpayQrCode
+                            ]
+                        ],
                         'status_code' => 'picpay_qrcode_created'
                     ]);
             
@@ -141,6 +147,11 @@ class PaymentController {
                 $body = json_encode([
                     'success' => true,
                     'message' => 'Qrcode gerado com sucesso!',
+                    'data' => [
+                        'pagarme' => [
+                            'pagarme_qr_code' => $referenceKey
+                        ]
+                    ],
                     'status_code' => 'qr_code_was_generated'
                 ]);
 

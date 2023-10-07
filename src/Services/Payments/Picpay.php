@@ -7,7 +7,7 @@ class Picpay {
     public static function requestGenerateQrcode($base64EncodedReference, $price, $firstName, $document, $phone, $account_email) {
 
         $returnUrl = "https://redezaptank.com.br/selectserver?page=purchase&ref=$base64EncodedReference"; // analisar
-        $callbackUrl = "https://redezaptank.com.br/Payments/picpay?referenceId=$base64EncodedReference"; // trocar
+        $callbackUrl = "{$_ENV['PICPAY_CALLBACK_URL']}?referenceId=$base64EncodedReference";
         $expiresAt = date('Y-m-d', strtotime("+3 day", strtotime(date('Y-m-d'))));
 
         $data = ["referenceId" => $base64EncodedReference, "callbackUrl" => $callbackUrl, "returnUrl" => $returnUrl, "value" => $price, "expiresAt" => $expiresAt, "buyer" => ["firstName" => $firstName, "lastName" => '', "document" => $document, "email" => $account_email, "phone" => $phone]];
