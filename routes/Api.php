@@ -13,6 +13,7 @@ use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsInvalid;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasCreated;
 
+use App\Zaptank\Controllers\PlayController;
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\AdminController;
 use App\Zaptank\Controllers\Account\AccountController;
@@ -31,6 +32,8 @@ use App\Zaptank\Controllers\SurveyController;
 use App\Zaptank\Controllers\EmailController;
 
 $app->group('/', function(RouteCollectorProxy $group) {
+
+    $group->get('play/{suv}', [playController::class, 'play'])->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);
 
     $group->post('account/phone/change', [AccountConfigController::class, 'changePhone']);
     $group->post('account/password/change', [AccountConfigController::class, 'changePassword']);

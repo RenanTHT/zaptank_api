@@ -11,8 +11,12 @@ class Server extends Model {
     public $serverName;
     public $baseUser;
     public $baseTank;
+    public $release;
+    public $flashUrl;
     public $areaId;
     public $questUrl;
+    public $maintenance;
+    public $localhost;
 
     public function search($serverId) :bool {
 
@@ -28,8 +32,12 @@ class Server extends Model {
             $this->setServerName($serverInfo['Name']);
             $this->setBaseUser($serverInfo['BaseUser']);
             $this->setBaseTank($serverInfo['BaseTank']);
+            $this->setFlashUrl($serverInfo['FlashUrl']);
             $this->setAreaId($serverInfo['AreaID']);
             $this->setQuestUrl($serverInfo['QuestUrl']);
+            $this->setMaintenance($serverInfo['Maintenance']);
+            $this->setRelease($serverInfo['Release']);
+            $this->setIsLocalhost($serverInfo['IsLocalHost']);
             return true;
         } else {
             return false;
@@ -52,11 +60,27 @@ class Server extends Model {
         $this->baseTank = $baseTank;
     }
 
+    public function setFlashUrl($flashUrl) {
+        $this->flashUrl = $flashUrl;
+    }
+
     private function setAreaId($areaId) {
         $this->areaId = $areaId;
     }
 
     private function setQuestUrl($questUrl) {
         $this->questUrl = $questUrl;
+    }
+    
+    private function setMaintenance($maintenance) {
+        $this->maintenance = $maintenance;
+    }
+
+    public function setRelease($release) {
+        $this->release = $release;
+    }
+
+    public function setIsLocalhost($isLocalhost) {
+        $this->localhost = $isLocalhost;
     }
 }
