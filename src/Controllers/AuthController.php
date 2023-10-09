@@ -57,7 +57,6 @@ class AuthController {
                     $jwt_hash = $token->createJWT($payload = [
                         'sub' => $uid,
                         'email' => $email,
-                        'phone' => $phone,
                         'exp' => Time::getTimestamp() + $_ENV['LOGIN_EXPIRATION_TIME_IN_SECONDS']
                     ]);
 
@@ -69,11 +68,14 @@ class AuthController {
                             'email' => $email,
                             'password' => $password,
                             'phone' => $phone,
+                            'verifiedEmail' => $user['VerifiedEmail'],
+                            'opinion' => $user['Opinion'],
+                            'badMail' => $user['BadMail'],
+                            'isFirstCharge' => $user['IsFirstCharge'],
                             'jwt_authentication_hash' => $jwt_hash
                         ]
                     ];                
                 }
-
             } else {
 
                 $body = [
