@@ -20,10 +20,10 @@ class AdminController {
 
         $admin = new Admin;
 
-        $administrator_has_permission = (!empty($admin->selectAdminByEmail($account_email)));
+        $has_administrator_permission = (!empty($admin->selectAdminByEmail($account_email)));
 
         $body = json_encode([
-            'administrator_has_permission' => $administrator_has_permission
+            'administrator_has_permission' => $has_administrator_permission
         ]);
 
         $response->getBody()->write($body);
