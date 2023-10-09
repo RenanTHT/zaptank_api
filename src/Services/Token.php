@@ -5,6 +5,7 @@ namespace App\Zaptank\Services;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Firebase\JWT\SignatureInvalidException;
+use Firebase\JWT\ExpiredException;
 
 class Token {
 
@@ -31,8 +32,10 @@ class Token {
             $decoded_array = (array) $decoded;
     
             return $decoded_array;        
+        } catch (ExpiredException $e) {
+            return 'Erro: o token de autenticação expirou.';
         } catch (SignatureInvalidException $e) {
-            return $e->getMessage();
+            return 'Erro: a assinatura do token de autenticação é inválida.';
         }
     }    
     

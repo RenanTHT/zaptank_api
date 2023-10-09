@@ -14,9 +14,8 @@ class ensureJwtAuthTokenIsValid {
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
         
         $token = new Token;
-        $decode = $token->validate($jwt);
         
-        if(!is_array($decode)) {
+        if(!is_array($token->validate($jwt))) {
 
             $body = json_encode([
                 'success' => false,
