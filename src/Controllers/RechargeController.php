@@ -111,6 +111,17 @@ class RechargeController {
         $invoice = new Invoice;
         $invoiceDetails = $invoice->selectBy_ServerId_InvoiceId_And_Email($serverId, $invoiceId, $account_email);
 
+        if(empty($invoiceDetails)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Não conseguimos encontrar esta fatura em nossa base de dados.',
+                'status_code' => 'internal_error_invoice_does_not_exist'
+            ]);
+
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         $vip_package = $invoiceDetails['PacoteID'];
         $price = $invoiceDetails['Price'];
         $invoiceStatus = $invoiceDetails['Status'];
