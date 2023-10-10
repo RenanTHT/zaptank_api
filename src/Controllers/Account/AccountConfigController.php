@@ -13,6 +13,7 @@ use App\Zaptank\Database;
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Email;
 use App\Zaptank\Helpers\Cryptography;
+use App\Zaptank\Helpers\Validator;
 
 use App\Zaptank\Helpers\Date;
 
@@ -165,6 +166,17 @@ class AccountConfigController {
         } else {
             $current_email = $_POST['current_email'];
             $new_email = $_POST['new_email'];
+
+            if(Validator::validateEmail($new_email) == false) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'E-mail inválido.',
+                    'status_code' => 'invalid_email'
+                ]);
+
+                $response->getBody()->write($body);
+                return $response;
+            }
 
             $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
@@ -356,6 +368,17 @@ class AccountConfigController {
         } else {
             $new_email = $_POST['new_email'];
 
+            if(Validator::validateEmail($new_email) == false) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'E-mail inválido.',
+                    'status_code' => 'invalid_email'
+                ]);
+
+                $response->getBody()->write($body);
+                return $response;
+            }
+            
             $account = new Account; 
 
             if(!empty($account->selectByEmail($new_email))) {

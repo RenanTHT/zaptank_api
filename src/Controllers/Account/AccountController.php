@@ -17,6 +17,7 @@ use App\Zaptank\Helpers\IpAdress;
 use App\Zaptank\Helpers\Date;
 use App\Zaptank\Helpers\Time;
 use App\Zaptank\Helpers\Cryptography;
+use App\Zaptank\Helpers\Validator;
 
 class AccountController {
 
@@ -57,12 +58,8 @@ class AccountController {
                 'status_code' => 'phone_exists'
             ]);
         } else {
-
-            $extension = strrchr($email, '@');
-            $whitelist = array('gmail.com', 'outlook.com', 'hotmail.com', 'hotmail.com.br', 'yahoo.com','yahoo.com.br', 'live.com', 'icloud.com', 'outlook.pt', 'outlook.com.br', 'icloud.com.br', 'qq.com');
-            $ex = explode('@', $email);
-                    
-            if(empty($extension) || !in_array(array_pop($ex), $whitelist)) {
+            
+            if(Validator::validateEmail($email) == false) {
                 $body = json_encode([
                     'success' => false,
                     'message' => 'E-mail inválido.',
