@@ -43,9 +43,24 @@ class CharacterController {
 
         $server = new Server;
         $server->search($decryptServer);
+        $serverName = $server->serverName;
+        $baseUser = $server->baseUser;
+        $areaId = $server->areaId;
 
         $character = new Character;
-        $character->store($account_email, $nickname, $gender, $server->serverName, $server->areaId, $server->baseUser);
+
+        if($character->getCharacterCountByNickname($nickname, $baseUser) > 0) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Já existe um usuário com este nick, por favor escolha outro.',
+                'status_code' => 'nickname_already_exists'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
+        $character->store($account_email, $nickname, $gender, $serverName, $areaId, $baseUser);
 
         $body = json_encode([
             'success' => true,
