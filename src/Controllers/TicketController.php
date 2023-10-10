@@ -257,6 +257,17 @@ class TicketController {
         $ticket = new Ticket;
         $ticketDetails = $ticket->selectById($ticketId);
         
+        if(empty($ticketDetails)) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'Não conseguimos encontrar este ticket.',
+                'status_code' => 'ticket_not_found'
+            ]);
+    
+            $response->getBody()->write($body);
+            return $response;
+        }
+
         if($ticketDetails['IsEvaluation'] == 1) {
             $body = json_encode([
                 'success' => false,
