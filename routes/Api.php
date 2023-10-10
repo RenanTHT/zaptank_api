@@ -31,9 +31,42 @@ use App\Zaptank\Controllers\Server\ServerController;
 use App\Zaptank\Controllers\SurveyController;
 use App\Zaptank\Controllers\EmailController;
 
+$app->post('/auth/login', [AuthController::class, 'make']);
+$app->post('/account/new', [AccountController::class, 'new']);
+
 $app->group('/', function(RouteCollectorProxy $group) {
 
-    $group->get('play/{suv}', [playController::class, 'play'])->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);
+    $group->group('', function(RouteCollectorProxy $group){
+
+        $group->get('play/{suv}', [playController::class, 'play']);
+
+        $group->post('character/config/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
+        $group->post('character/config/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
+        $group->post('character/config/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
+    
+        $group->get('backpack/list/{suv}', [VirtualBagController::class, 'listItems']);
+        $group->post('backpack/item/send/{suv}', [VirtualBagController::class, 'sendItem']);
+        
+        $group->post('invoice/new/{suv}', [InvoiceController::class, 'new']);
+        $group->get('invoice/details/{suv}', [InvoiceController::class, 'get']);
+
+        $group->get('chargeback/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
+        $group->post('chargeback/collect/{suv}', [RechargeController::class, 'collectChargeback']);
+
+        $group->post('ticket/new/{suv}', [TicketController::class, 'new']);
+        $group->get('ticket/list/{suv}', [TicketController::class, 'list'])->add(new checkIfTheUserDoesNotHaveAdministratorPermissions);
+        $group->post('ticket/close/{suv}', [TicketController::class, 'close'])->add(new checkIfTheUserDoesNotHaveAdministratorPermissions);
+
+        $group->post('survey/save/{suv}', [SurveyController::class, 'store']);
+
+        $group->get('rank/temporada/list/{suv}', [RankController::class, 'listRankTemporada']);
+        $group->get('rank/online/list/{suv}', [RankController::class, 'listRankOnline']);
+        $group->get('rank/poder/list/{suv}', [RankController::class, 'listRankPoder']);
+        $group->get('rank/pvp/list/{suv}', [RankController::class, 'listRankPvp']);
+
+        $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment']);
+
+    })->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);   
 
     $group->post('account/phone/change', [AccountConfigController::class, 'changePhone']);
     $group->post('account/password/change', [AccountConfigController::class, 'changePassword']);
@@ -43,63 +76,18 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
-
-    $group->group('character', function(RouteCollectorProxy $group) {
-
-        $group->group('/config', function(RouteCollectorProxy $group) {
-            $group->post('/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
-            $group->post('/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
-            $group->post('/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);
-        })->add(new checkIfCharacterWasNotCreated);
-
-        $group->post('/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
-
-    })->add(new checkIfServerSuvParameterIsInvalid);
-
-    $group->group('backpack', function(RouteCollectorProxy $group) {
-        $group->get('/list/{suv}', [VirtualBagController::class, 'listItems']);
-        $group->post('/item/send/{suv}', [VirtualBagController::class, 'sendItem']);
-    })->add(new checkIfServerSuvParameterIsInvalid);
-
-    $group->group('invoice', function(RouteCollectorProxy $group) {
-        $group->post('/new/{suv}', [InvoiceController::class, 'new']);
-        $group->get('/details/{suv}', [InvoiceController::class, 'get']);
-    })->add(new checkIfServerSuvParameterIsInvalid);
-    
-    $group->group('chargeback', function(RouteCollectorProxy $group) {
-        $group->get('/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
-        $group->post('/collect/{suv}', [RechargeController::class, 'collectChargeback']);
-    })->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);
-
-    $group->group('ticket', function(RouteCollectorProxy $group) {
-        $group->post('/new/{suv}', [TicketController::class, 'new'])->add(new checkIfCharacterWasNotCreated);
-        $group->get('/list/{suv}', [TicketController::class, 'list']);
-        $group->post('/close/{suv}', [TicketController::class, 'close'])->add(new checkIfTheUserDoesNotHaveAdministratorPermissions);
-    })->add(new checkIfServerSuvParameterIsInvalid);
-    
+    $group->post('character/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
+  
     $group->post('ticket/evaluate/{reference}', [TicketController::class, 'evaluateService']);
     $group->get('ticket/details/{reference}', [TicketController::class, 'getDetails']);
     
     $group->get('server/check/{suv}', [ServerController::class, 'CheckServerSuvToken']);
-    $group->post('survey/save/{suv}', [SurveyController::class, 'store'])->add(new checkIfServerSuvParameterIsInvalid);
-    $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment'])->add(new checkIfServerSuvParameterIsInvalid);
-
-    $group->group('rank', function(RouteCollectorProxy $group) {
-        $group->get('/temporada/list/{suv}', [RankController::class, 'listRankTemporada']);
-        $group->get('/online/list/{suv}', [RankController::class, 'listRankOnline']);
-        $group->get('/poder/list/{suv}', [RankController::class, 'listRankPoder']);
-        $group->get('/pvp/list/{suv}', [RankController::class, 'listRankPvp']);
-    })->add(new checkIfServerSuvParameterIsInvalid);
-
     $group->get('admin/check_permission', [AdminController::class, 'checkPermission']);
 
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/payment/notification/picpay', [PaymentNotificationController::class, 'picpayNotification']);
 $app->post('/payment/notification/pagarme', [PaymentNotificationController::class, 'pagarmeNotification']);
-
-$app->post('/auth/login', [AuthController::class, 'make']);
-$app->post('/account/new', [AccountController::class, 'new']);
 
 $app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
