@@ -25,6 +25,7 @@ use App\Zaptank\Controllers\InvoiceController;
 use App\Zaptank\Controllers\RechargeController;
 use App\Zaptank\Controllers\VirtualBagController;
 use App\Zaptank\Controllers\TicketController;
+use App\Zaptank\Controllers\VipController;
 use App\Zaptank\Controllers\Payments\PaymentController;
 use App\Zaptank\Controllers\Payments\PaymentNotificationController;
 use App\Zaptank\Controllers\Server\ServerController;
@@ -65,6 +66,9 @@ $app->group('/', function(RouteCollectorProxy $group) {
         $group->get('rank/pvp/list/{suv}', [RankController::class, 'listRankPvp']);
 
         $group->post('payment/pix/{gateway}/new/{suv}', [PaymentController::class, 'newPixPayment']);
+
+        $group->get('vip/list/{suv}', [VipController::class, 'list']);
+        $group->get('vip/{id}/details/{suv}', [VipController::class, 'details']);
 
     })->add(new checkIfServerSuvParameterIsInvalid)->add(new checkIfCharacterWasNotCreated);   
 
