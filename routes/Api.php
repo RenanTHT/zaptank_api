@@ -41,6 +41,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
 
         $group->get('play/{suv}', [playController::class, 'play']);
 
+        $group->get('character/style/{suv}', [CharacterController::class, 'getStyle']);
         $group->post('character/config/changenick/{suv}', [CharacterConfigController::class, 'changenick'])->add(new ensureThatTheCharacterNewNicknameIsValid);
         $group->post('character/config/clearbag/{suv}', [CharacterConfigController::class, 'clearbag']);
         $group->post('character/config/giftcode/{suv}', [CharacterConfigController::class, 'redeemGiftCode'])->add(new checksIfRewardCodeIsValidAndHasNotBeenUsedByTheUser);

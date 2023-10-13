@@ -76,7 +76,6 @@ class CharacterController {
     public function checkIfCharacterWasCreated(Request $request, Response $response, array $args) :Response {
 
         $suv = $args['suv'];
-
         $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
 
         $token = new Token;
@@ -95,6 +94,61 @@ class CharacterController {
 
         $body = json_encode([
             'character_is_created' => $character_is_created
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
+
+
+    public function getStyle(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->decode($jwt);
+        $account_email = $payload['email'];
+
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
+
+        $character = new Character;
+        $character->search($account_email, $baseUser);
+        $gender = $character->gender;
+        $style = $character->style;
+        $level = $character->level;
+
+        $styles = explode(',', $style);
+
+        $head = explode('|', $styles[0]);
+        $effect = explode('|', $styles[3]);
+        $hair = explode('|', $styles[2]);
+        $face = explode('|', $styles[5]);
+        $cloth = explode('|', $styles[4]);    
+        $arm = explode('|', $styles[6]);  
+
+        $data = [
+            'character' => [
+                'gender' => $gender,
+                'style' => [
+                    'head' => $head,
+                    'effect' => $effect,
+                    'hair' => $hair,
+                    'face' => $face,
+                    'cloth' => $cloth,
+                    'arm' => $arm
+                ],
+                'level' => $level
+            ]
+        ];
+
+        $body = json_encode([
+            'data' => $data
         ]);
 
         $response->getBody()->write($body);

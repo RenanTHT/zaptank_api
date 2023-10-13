@@ -10,13 +10,16 @@ class Character extends Model {
     public $Id;
     public $userName;
     public $nickName;
+    public $gender;
+    public $level;
     public $isExist;
+    public $style;
 
     public function search($userName, $BaseUser) :bool {
         
         $conn = $this->db->get();
         
-        $stmt = $conn->prepare("SELECT UserID, UserName, NickName, IsExist FROM {$BaseUser}.dbo.Sys_Users_Detail WHERE UserName = :userName");
+        $stmt = $conn->prepare("SELECT UserID, UserName, NickName, Sex, Style, Grade, IsExist FROM {$BaseUser}.dbo.Sys_Users_Detail WHERE UserName = :userName");
         $stmt->bindParam(':userName', $userName);
         $stmt->execute();
         $characterInfo = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -25,6 +28,9 @@ class Character extends Model {
             $this->Id = $characterInfo['UserID'];
             $this->userName = $characterInfo['UserName'];
             $this->nickName = $characterInfo['NickName'];
+            $this->gender = $characterInfo['Sex'];
+            $this->style = $characterInfo['Style'];
+            $this->level = $characterInfo['Grade'];
             $this->isExist = $characterInfo['IsExist'];
             return true;
         } else {
