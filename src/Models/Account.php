@@ -19,7 +19,7 @@ class Account extends Model {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
+        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge, CreateDate FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email and Password = :password");
         $stmt->bindParam(':email', $email);
         $stmt->bindParam(':password', $password);
         $stmt->execute();
@@ -32,7 +32,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE UserId = :user_id");
+        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge, CreateDate FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE UserId = :user_id");
 		$stmt->bindParam(':user_id', $userId);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -42,7 +42,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
+        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge, CreateDate FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Email = :email");
 		$stmt->bindParam(':email', $email);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -53,7 +53,7 @@ class Account extends Model {
 
         $conn = $this->db->get();
         
-        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
+        $stmt = $conn->prepare("SELECT UserId, Password, IsBanned, VerifiedEmail, Email, Telefone, Opinion, BadMail, IsFirstCharge, CreateDate FROM {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo WHERE Telefone = :phone");
 		$stmt->bindParam(':phone', $phone);
 		$stmt->execute();		
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);       

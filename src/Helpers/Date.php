@@ -13,6 +13,10 @@ class Date {
         return date($pattern);
     }
 
+    public static function formatDate($date, $pattern = 'd-m-Y') :string {
+        return date($pattern, strtotime($date));
+    }
+
     public static function difference($start, $end) :DateInterval {
 
         $start_time = DateTime::createFromFormat('Y-m-d H:i:s', $start);

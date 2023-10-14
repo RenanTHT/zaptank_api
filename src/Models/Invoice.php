@@ -70,6 +70,18 @@ class Invoice extends Model {
         return $result = $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function selectRechargeCountWithRefund($serverId, $email) {
+
+        $conn = $this->db->get();
+        
+        $stmt = $conn->prepare("SELECT COUNT(*) as count FROM {$_ENV['BASE_SERVER']}.dbo.Vip_Data WHERE ServerID = :server_id and UserName = :email and Status = 'Aprovada' and IsChargeBack = 1");
+        $stmt->bindParam(':server_id', $serverId);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['count'];
+    }
+
     public function selectInvoiceCountByIdAndUser($invoiceId, $email) {
         
         $conn = $this->db->get();

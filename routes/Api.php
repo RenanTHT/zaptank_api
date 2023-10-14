@@ -13,6 +13,7 @@ use App\Zaptank\Middlewares\Server\checkIfServerSuvParameterIsInvalid;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasNotCreated;
 use App\Zaptank\Middlewares\Character\checkIfCharacterWasCreated;
 
+use App\Zaptank\Controllers\PageController;
 use App\Zaptank\Controllers\PlayController;
 use App\Zaptank\Controllers\AuthController;
 use App\Zaptank\Controllers\AdminController;
@@ -39,6 +40,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
 
     $group->group('', function(RouteCollectorProxy $group){
 
+        $group->get('serverlist/{suv}', [PageController::class, 'serverList']);
         $group->get('play/{suv}', [playController::class, 'play']);
 
         $group->get('character/style/{suv}', [CharacterController::class, 'getStyle']);

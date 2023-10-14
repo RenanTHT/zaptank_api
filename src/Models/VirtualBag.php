@@ -25,6 +25,18 @@ class VirtualBag extends Model {
         return $result['itemCount'];
     }
     
+    
+    public function selectUnusedBackpackItemCount($serverId, $email) {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT count(*) as itemCount FROM {$_ENV['BASE_SERVER']}.dbo.Bag_Goods WHERE UserName = :email and Status$serverId = '0'");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['itemCount'];
+    }
+    
     public function selectBackpackItem($serverId, $Id, $templateId, $email) {
 
         $conn = $this->db->get();
