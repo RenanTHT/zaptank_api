@@ -198,7 +198,7 @@ class CharacterController {
         
         if(empty($arm[1])) {
             $arm = [
-                'pic' => 'default',
+                'pic' => 'axe',
                 'sex' => $gender
             ];
         } else {
