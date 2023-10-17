@@ -69,10 +69,10 @@ class PaymentController {
                 
                 $qrcode = Picpay::requestGenerateQrcode($base64EncodedReference, $price, $firstName, $document, $phone, $account_email);
 
-                if(!empty($qrcode->qrcode->base64)) {
+                if(!empty($qrcode['qrcode']['base64'])) {
             
-                    $picpayLink = $qrcode->paymentUrl;
-                    $picpayQrCode = $qrcode->qrcode->base64;
+                    $picpayLink = $qrcode['paymentUrl'];
+                    $picpayQrCode = $qrcode['qrcode']['base64'];
                     $invoice->updatePicpayQrCode($invoiceId, $picpayQrCode);
                     $invoice->updatePicpayLink($invoiceId, $picpayLink);
         
