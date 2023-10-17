@@ -93,7 +93,8 @@ class PaymentController {
                     $body = json_encode([
                         'success' => false,
                         'message' => 'Ocorreu um erro interno, por favor tente novamente mais tarde...',
-                        'status_code' => 'picpay_qrcode_not_created'
+                        'status_code' => 'picpay_qrcode_not_created',
+                        'data' => $qrcode
                     ]);
             
                     $response->getBody()->write($body);
