@@ -38,7 +38,8 @@ $app->add(function ($request, $handler) use ($app) {
 
     $body = json_encode([
         'error' => true,
-        'message' => 'O servidor não consegue responder a sua solicitação'
+        'message' => 'O servidor não consegue responder a sua solicitação',
+        'origin' => $origin
     ]);
 
     $response = new Response;
