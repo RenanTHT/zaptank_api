@@ -143,8 +143,8 @@ class InvoiceController {
                 'invoice' => [
                     'status' => $invoiceDetails['Status'],
                     'price' => $invoiceDetails['Price'],
-                    'qrcode_pagarme' => $invoiceDetails['PixDataImage'],
-                    'key_pagarme' => $invoiceDetails['KeyRef'],
+                    'qrcode_openpix' => $invoiceDetails['PixDataImage'],
+                    'key_openpix' => $invoiceDetails['KeyRef'],
                     'qrcode_picpay' => $invoiceDetails['PicPayQrCode']
                 ],
                 'character' => [

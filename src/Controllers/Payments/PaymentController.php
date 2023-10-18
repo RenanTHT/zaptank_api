@@ -10,6 +10,7 @@ use App\Zaptank\Models\Vip;
 use App\Zaptank\Services\Token;
 use App\Zaptank\Services\Payments\Picpay;
 use App\Zaptank\Services\Payments\Pagarme;
+use App\Zaptank\Services\Payments\Openpix;
 use App\Zaptank\Helpers\Cryptography;
 use App\Zaptank\Helpers\CurlRequest;
 
@@ -100,6 +101,72 @@ class PaymentController {
                     $response->getBody()->write($body);
                     return $response;
                 }
+                break;
+            case 'openpix':
+                $invoiceDetails = $invoice->selectById($invoiceId);  
+
+                $base64EncodedReference = base64_encode($invoiceId);
+                $firstName = $invoiceDetails['Name'];
+                $price = str_replace(".", "", $invoiceDetails['Price']);
+
+                $client = Openpix::generateClient($firstName, $account_email);
+
+                if(empty($client)) {
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => 'Ocorreu um erro interno, por favor tente novamente mais tarde...',
+                        'status_code' => 'unable_to_create_user'
+                    ]);
+    
+                    $response->getBody()->write($body);
+                    return $response;
+                }
+
+                $clientPix = json_encode(array(
+                    "correlationID" => $invoiceId,
+                    "value" => $price,
+                    "name" => $firstName,
+                    "email" => $account_email
+                ));
+
+                $qrcode = Openpix::requestGenerateQrcode($clientPix);
+
+                if(!isset($qrcode['charge']['identifier']) || !isset($qrcode['charge']['brCode']) || !isset($qrcode['charge']['qrCodeImage'])) {
+                    $body = json_encode([
+                        'success' => false,
+                        'message' => 'Não foi possível gerar a chave aleatória, gere um novo QrCode.',
+                        'status_code' => 'openpix_qrcode_not_created',
+                        'data' => $qrcode,
+                        'type' => gettype($qrcode)
+                    ]);
+    
+                    $response->getBody()->write($body);
+                    return $response; 
+                }
+
+                $orderNumber = $qrcode['charge']['identifier'];
+                $referenceKey = $qrcode['charge']['brCode'];
+                $qrurl = $qrcode['charge']['qrCodeImage'];
+                $qrcodeImageUrl = 'data:image/jpg;base64,' . base64_encode(CurlRequest::get($qrurl));
+
+                $invoice->updateReferenceKey($invoiceId, $referenceKey);
+                $invoice->updatePixDataImage($invoiceId, $qrcodeImageUrl);
+                $invoice->updateOrderNumber($invoiceId, $orderNumber);
+                $invoice->updateMethodByInvoiceId($invoiceId, $method = 'PIX');
+
+                $body = json_encode([
+                    'success' => true,
+                    'message' => 'Qrcode gerado com sucesso!',
+                    'data' => [
+                        'openpix' => [
+                            'openpix_qr_code' => $referenceKey
+                        ]
+                    ],
+                    'status_code' => 'qr_code_was_generated'
+                ]);
+        
+                $response->getBody()->write($body);
+                return $response;
                 break;
             case 'pagarme':
                 $invoiceDetails = $invoice->selectById($invoiceId);  
