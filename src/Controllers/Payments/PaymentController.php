@@ -147,7 +147,8 @@ class PaymentController {
                 $orderNumber = $qrcode['charge']['identifier'];
                 $referenceKey = $qrcode['charge']['brCode'];
                 $qrurl = $qrcode['charge']['qrCodeImage'];
-                $qrcodeImageUrl = 'data:image/jpg;base64,' . base64_encode(CurlRequest::get($qrurl));
+                $image = CurlRequest::get($qrurl);
+                $qrcodeImageUrl = 'data:image/jpg;base64,' . base64_encode($image);
 
                 $invoice->updateReferenceKey($invoiceId, $referenceKey);
                 $invoice->updatePixDataImage($invoiceId, $qrcodeImageUrl);

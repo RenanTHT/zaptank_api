@@ -15,7 +15,7 @@ class Openpix {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $payload);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json", `Authorization: {$_ENV['OPENPIX_TOKEN']}`]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "Authorization: {$_ENV['OPENPIX_TOKEN']}"]);
         
         $curl_response = json_decode(
             curl_exec($curl), true
@@ -39,7 +39,7 @@ class Openpix {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
         curl_setopt($curl, CURLOPT_POST, true);
         curl_setopt($curl, CURLOPT_POSTFIELDS, $clientData);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json", `Authorization: {$_ENV['OPENPIX_TOKEN']}`]);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ["Content-Type: application/json", "Authorization: {$_ENV['OPENPIX_TOKEN']}"]);
         
         $curl_response = json_decode(
             curl_exec($curl), true
