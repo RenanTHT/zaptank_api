@@ -139,7 +139,7 @@ class AccountController {
         $emailModel = new EmailModel;
         $activate_email = $emailModel->selectEmailActivationRecordWithToken($activation_token);
 
-        if(empty($activate_email) || $activate_email['active'] == 1) {
+        if(empty($activate_email) || $activate_email['active'] == 0) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Seu token de acesso expirou ou não existe, pode ser que você tenha tentado acessar uma página que não tenha permissão.',
@@ -197,6 +197,7 @@ class AccountController {
 
         $requestLimiter = new RequestLimiter(IpAdress::getUserIp());
         $remainingTime = $requestLimiter->limitPasswordRecoveryRequests();
+        $requestTime = date('H:i:s', strtotime("+$remainingTime seconds", strtotime(Time::get())));
 
         if($remainingTime > 0) {
             $body = json_encode([

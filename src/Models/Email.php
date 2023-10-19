@@ -7,14 +7,14 @@ use \PDO;
 
 class Email extends Model {
 
-    public function insertEmailActivationToken(int $userId, $token, string $data) {
+    public function insertEmailActivationToken(int $userId, $token, string $date) {
 
         $conn = $this->db->get();
 
         $stmt = $conn->prepare("INSERT INTO {$_ENV['BASE_SERVER']}.dbo.activate_email(userID, token, active, Date) VALUES(:userID, :token, 1, CONVERT(datetime, :date, 121))");
         $stmt->bindParam(':userID', $userId);
         $stmt->bindParam(':token', $token);
-        $stmt->bindParam(':date', $data);
+        $stmt->bindParam(':date', $date);
         $stmt->execute();        
     }
 
