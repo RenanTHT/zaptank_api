@@ -94,7 +94,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
 })->add(new ensureJwtAuthTokenIsValid);
 
 $app->post('/payment/notification/picpay', [PaymentNotificationController::class, 'picpayNotification']);
-$app->post('/payment/notification/pagarme', [PaymentNotificationController::class, 'pagarmeNotification']);
+$app->post('/payment/notification/openpix', [PaymentNotificationController::class, 'openpixNotification']);
 
 $app->post('/account/email/activation/request', [AccountConfigController::class, 'saveEmailActivationRequest']);
 $app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
