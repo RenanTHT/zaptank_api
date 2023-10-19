@@ -139,7 +139,7 @@ class AccountController {
         $emailModel = new EmailModel;
         $activate_email = $emailModel->selectEmailActivationRecordWithToken($activation_token);
 
-        if(empty($activate_email) || $activate_email['active'] == 0) {
+        if(empty($activate_email) || $activate_email['active'] == 1) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'Seu token de acesso expirou ou não existe, pode ser que você tenha tentado acessar uma página que não tenha permissão.',
