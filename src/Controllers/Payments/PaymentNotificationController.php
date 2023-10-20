@@ -149,7 +149,7 @@ class PaymentNotificationController {
             $authorization = $_GET['authorization'];
         }
 
-        if($authorization !== $_ENV['PAGARME_TOKEN']) {
+        if($authorization !== $_ENV['OPENPIX_TOKEN']) {
             $body = json_encode(false);
             $response->getBody()->write($body);
             return $response;
