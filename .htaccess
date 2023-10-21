@@ -1,7 +1,7 @@
 Header always set Access-Control-Allow-Headers "Authorization"
 
 RewriteEngine On
-RewriteBase /zaptank_api/
+RewriteBase /api/
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
