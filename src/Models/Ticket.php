@@ -30,12 +30,11 @@ class Ticket extends Model {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getCountOfOpenTickets($email) {
+    public function getCountOfOpenTickets() {
         
         $conn = $this->db->get();
 
-        $stmt = $conn->prepare("SELECT count(*) as openTicketCount FROM {$_ENV['BASE_SERVER']}.dbo.Tickets WHERE Status = '0' and UserName = :email");
-        $stmt->bindParam(':email', $email);
+        $stmt = $conn->prepare("SELECT count(*) as openTicketCount FROM {$_ENV['BASE_SERVER']}.dbo.Tickets WHERE Status = 0");
         $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['openTicketCount'];

@@ -52,7 +52,7 @@ class PageController {
 
         if(!empty($admin->selectAdminByEmail($account_email))) {
             $ticket = new Ticket;
-            $ticketCount = $ticket->getCountOfOpenTickets($account_email);
+            $ticketCount = $ticket->getCountOfOpenTickets();
             $alerts['ticket'] = [
                 'show' => true,
                 'data' => $ticketCount
