@@ -272,7 +272,7 @@ class AccountConfigController {
                     $EncMail = $cryptography->EncryptText($email);
                     $token = md5(time());
                     
-                    $emailModel->insertEmailChangeRequest($uid, $token, $date = date('d/m/Y H:i:s'));
+                    $emailModel->insertEmailChangeRequest($uid, $token, $date = Date::getDate($pattern = 'd/m/Y H:i:s'));
     
                     $emailService = new Email;
                     $email_sent = $emailService->send(
@@ -326,7 +326,7 @@ class AccountConfigController {
                         $EncMail = $cryptography->EncryptText($email);
                         $token = md5(time());
                         
-                        $emailModel->insertEmailChangeRequest($uid, $token, $date = date('d/m/Y H:i:s'));
+                        $emailModel->insertEmailChangeRequest($uid, $token, $date = Date::getDate($pattern = 'd/m/Y H:i:s'));
         
                         $emailService = new Email;
                         $email_sent = $emailService->send(
