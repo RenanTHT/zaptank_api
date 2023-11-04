@@ -31,7 +31,11 @@ class VirtualBagController {
         if($virtualBag->selectBackpackItemCount($account_email) == 0) {
             $body = json_encode([
                 'message' => 'Sua mochila está vazia!',
-                'status_code' => 'empty_backpack'
+                'status_code' => 'empty_backpack',
+                'data' => [
+                    'resource' => $_ENV['RESOURCE'],
+                    'items' => []
+                ]
             ]);
             $response->getBody()->write($body);
             return $response;
