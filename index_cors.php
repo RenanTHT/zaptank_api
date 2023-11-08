@@ -20,8 +20,6 @@ $app = AppFactory::create();
 
 // $app->addErrorMiddleware(false, true, true);
 
-$app->setBasePath('/api');
-
 $app->add(function ($request, $handler) use ($app) {
 
     $allowedOrigins = ['http://localhost', 'https://appws.picpay.com', 'https://api.pagar.me'];

@@ -29,13 +29,28 @@ $app->add(new RequestResponseLoggerMiddleware($logger));
 
 // $app->addErrorMiddleware(false, true, true);
 
-$app->setBasePath('/api');
-
 $app->add(function ($request, $handler) use ($app) {
+
+    $allowedOrigins = ['http://localhost', 'https://appws.picpay.com', 'https://api.pagar.me'];
+
     $response = $handler->handle($request);
-    return $response
+    $origin = $request->getHeaderLine('Origin');
+
+    if (in_array($origin, $allowedOrigins)) {
+        return $response = $response
         ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
         ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+    }
+
+    $body = json_encode([
+        'error' => true,
+        'message' => 'O servidor não consegue responder a sua solicitação',
+        'origin' => $origin
+    ]);
+
+    $response = new Response;
+    $response->getBody()->write($body);
+    return $response->withStatus(403);
 });
 
 require __DIR__ . '/routes/Api.php';
