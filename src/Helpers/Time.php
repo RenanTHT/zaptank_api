@@ -5,8 +5,6 @@ namespace App\Zaptank\Helpers;
 use \DateTime;
 use \DateInterval;
 
-date_default_timezone_set('America/Sao_Paulo');
-
 class Time {
 
     public static function get() {

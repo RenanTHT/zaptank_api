@@ -5,8 +5,6 @@ namespace App\Zaptank\Helpers;
 use \DateTime;
 use \DateInterval;
 
-date_default_timezone_set('America/Sao_Paulo');
-
 class Date {
 
     public static function getDate($pattern = 'Y-m-d H:i:s') :string {
