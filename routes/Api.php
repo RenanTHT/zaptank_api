@@ -53,6 +53,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
         
         $group->post('invoice/new/{suv}', [InvoiceController::class, 'new']);
         $group->get('invoice/details/{suv}', [InvoiceController::class, 'get']);
+        $group->get('invoice/status/{suv}', [InvoiceController::class, 'status']);
 
         $group->get('chargeback/check/{suv}', [RechargeController::class, 'checkChargebackDetails']);
         $group->post('chargeback/collect/{suv}', [RechargeController::class, 'collectChargeback']);

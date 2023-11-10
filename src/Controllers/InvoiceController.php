@@ -156,4 +156,33 @@ class InvoiceController {
         $response->getBody()->write($body);
         return $response;        
     }
+
+    public function status(Request $request, Response $response, array $args) :Response {
+        
+        $suv = $args['suv'];
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+        $encryptedInvoiceId = $_GET['invoice_id'];
+
+        $cryptography = new Cryptography;
+
+        $invoiceId = $cryptography->DecryptText($encryptedInvoiceId); 
+        
+        $token = new Token;
+        $payload = $token->decode($jwt);
+        $account_email = $payload['email'];
+
+        $invoice = new Invoice;
+        $invoiceDetails = $invoice->selectBy_InvoiceId_And_Email($invoiceId, $account_email);
+
+        $body = json_encode([
+            'data' => [
+                'invoice' => [
+                    'status' => $invoiceDetails['Status']
+                ]
+            ]
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;    
+    }
 }
