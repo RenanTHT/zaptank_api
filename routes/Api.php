@@ -82,6 +82,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
     $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
     $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
+    $group->post('account/email/activation/request', [AccountConfigController::class, 'saveEmailActivationRequest']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
     $group->post('character/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
@@ -97,7 +98,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
 $app->post('/payment/notification/picpay', [PaymentNotificationController::class, 'picpayNotification']);
 $app->post('/payment/notification/openpix', [PaymentNotificationController::class, 'openpixNotification']);
 
-$app->post('/account/email/activation/request', [AccountConfigController::class, 'saveEmailActivationRequest']);
 $app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
