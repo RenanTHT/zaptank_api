@@ -445,7 +445,22 @@ class AccountConfigController {
             return $response;
         }
 
-        $email = $_POST['email'];
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->decode($jwt);
+        $email = $payload['email'];
+
+        if($_POST['email'] != $email) {
+            $body = json_encode([
+                'success' => false,
+                'message' => 'O e-mail informado é inválido.',
+                'status_code' => 'invalid_email'
+            ]);
+
+            $response->getBody()->write($body);
+            return $response;
+        }
 
         $cryptography = new Cryptography;
         $EncMail = $cryptography->EncryptText($email);
