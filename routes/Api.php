@@ -99,6 +99,7 @@ $app->post('/payment/notification/picpay', [PaymentNotificationController::class
 $app->post('/payment/notification/openpix', [PaymentNotificationController::class, 'openpixNotification']);
 
 $app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
+$app->get('/account/email/change/token/check/{token}', [AccountController::class, 'checkEmailChangeToken']);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
 $app->get('/account/password/recover/token/check/{token}', [AccountController::class, 'checkResetPasswordToken']);

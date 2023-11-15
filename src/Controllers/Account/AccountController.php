@@ -446,4 +446,54 @@ class AccountController {
             }
         }
     }
+
+    public function checkEmailChangeToken(Request $request, Response $response, array $args) :Response {
+
+        $token = addslashes($args['token']);
+
+        $emailModel = new EmailModel;
+        $emailChangeRequest = $emailModel->selectEmailChangeRequestByToken($token);
+
+        if(empty($emailChangeRequest)) {
+            $body = json_encode([
+                'email_change_token_is_valid' => false,
+                'message' => 'Seu token de acesso expirou ou não existe, pode ser que você tenha tentado acessar uma página que não tenha permissão.',
+                'status_code' => 'Invalid_change_token'
+            ]);     
+            
+            $response->getBody()->write($body);
+            return $response;
+        } else {
+            $isChanged = $emailChangeRequest['IsChanged'];
+            $expirationTime = date('Y-m-d H:i:s', strtotime('+31 minutes', strtotime($emailChangeRequest['Date'])));
+
+            if($isChanged == 1 || Date::getDate() > $expirationTime) {
+                $body = json_encode([
+                    'success' => false,
+                    'message' => 'Seu token de acesso expirou ou não existe, pode ser que você tenha tentado acessar uma página que não tenha permissão.',
+                    'status_code' => 'invalid_token'
+                ]);
+
+                $response->getBody()->write($body);
+                return $response;                    
+            } else {
+                $body = json_encode([
+                    'email_change_token_is_valid' => true,
+                    'data' => [
+                        'expirationTime' => date('H:i:s', strtotime($expirationTime))
+                    ]
+                ]);
+        
+                $response->getBody()->write($body);
+                return $response;
+            }
+        }
+
+        $body = json_encode([
+            $emailChangeRequest
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
 }

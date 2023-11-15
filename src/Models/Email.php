@@ -46,6 +46,16 @@ class Email extends Model {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    public function selectEmailChangeRequestByToken(string $token) {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("SELECT * FROM {$_ENV['BASE_SERVER']}.dbo.change_email WHERE token = :token ORDER BY Date DESC");
+        $stmt->bindParam(':token', $token);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     public function insertEmailChangeRequest(int $userId, $token, $date) :bool {
 
