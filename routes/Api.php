@@ -80,7 +80,6 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/password/change', [AccountConfigController::class, 'changePassword']);
     $group->post('account/email/changenotverified', [AccountConfigController::class, 'changeEmailNotVerified']);
     $group->post('account/email/changerequest', [AccountConfigController::class, 'saveEmailChangeRequest']);
-    $group->post('account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
     $group->get('account/email/verified/check', [AccountConfigController::class, 'checkIfEmailIsVerified']);
     $group->post('account/email/activation/request', [AccountConfigController::class, 'saveEmailActivationRequest']);
 
@@ -100,6 +99,7 @@ $app->post('/payment/notification/openpix', [PaymentNotificationController::clas
 
 $app->post('/account/email/activate/{token}', [AccountController::class, 'activateEmail']);
 $app->get('/account/email/change/token/check/{token}', [AccountController::class, 'checkEmailChangeToken']);
+$app->post('/account/email/change', [AccountConfigController::class, 'changeEmail'])->add(new checkIfEmailChangeTokenIsValid);
 $app->post('/account/password/recover/request', [AccountController::class, 'recoverPasswordRequest']);
 $app->post('/account/password/recover', [AccountController::class, 'recoverPassword']);
 $app->get('/account/password/recover/token/check/{token}', [AccountController::class, 'checkResetPasswordToken']);

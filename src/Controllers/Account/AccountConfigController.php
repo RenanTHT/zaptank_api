@@ -391,19 +391,20 @@ class AccountConfigController {
                     'status_code' => 'email_in_use'
                 ]);
             } else {
-                $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+                $token = $_POST['token'];
 
-                $token = new Token;
-                $payload = $token->decode($jwt);
-        
-                $uid = $payload['sub']; 
-                $account_email = $payload['email'];
+                $emailModel = new EmailModel;
+                $emailChangeRequest = $emailModel->selectEmailChangeRequestByToken($token);
+
+                $user = $account->selectById($emailChangeRequest['userID']);
+                $uid = $user['UserId']; 
+                $account_email = $user['Email'];
                 
                 $account->updateEmail($account_email, $new_email);
 
                 $database = new Database;
 
-                $database->get()->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.change_email SET IsChanged=1 WHERE userID = '$uid'");
+                $database->get()->query("UPDATE {$_ENV['BASE_SERVER']}.dbo.change_email SET IsChanged = 1 WHERE token = '$token'");
 
                 $body = json_encode([
                     'success' => true,
