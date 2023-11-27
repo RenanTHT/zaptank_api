@@ -9,18 +9,15 @@ use Firebase\JWT\ExpiredException;
 
 class Token {
 
-    private $private_key;
-
-    private $public_key;
+    private $secret_key;
 
     public function __construct() {
-        $this->private_key = $_ENV['PRIVATE_KEY'];
-        $this->public_key = $_ENV['PUBLIC_KEY'];
+        $this->secret_key = $_ENV['SECRET_KEY'];
     }
 
     public function createJWT(array $payload) :string {
 
-        $jwt = JWT::encode($payload, $this->private_key, 'HS256'); 
+        $jwt = JWT::encode($payload, $this->secret_key, 'HS256'); 
 
         return $jwt;
     }
@@ -28,7 +25,7 @@ class Token {
     public function validate($jwt) {
 
         try {
-            $decoded = JWT::decode($jwt, new Key($this->private_key, 'HS256'));
+            $decoded = JWT::decode($jwt, new Key($this->secret_key, 'HS256'));
             $decoded_array = (array) $decoded;
     
             return $decoded_array;        
@@ -42,7 +39,7 @@ class Token {
     public function decode($jwt) {
 
         try {
-            $decoded = JWT::decode($jwt, new Key($this->private_key, 'HS256'));
+            $decoded = JWT::decode($jwt, new Key($this->secret_key, 'HS256'));
             $decoded_array = (array) $decoded;
     
             return $decoded_array;        
