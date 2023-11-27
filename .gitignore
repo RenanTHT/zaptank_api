@@ -1,9 +1,9 @@
 /vendor/
 /tests/
 composer.lock
-
 phpunit.xml
 .phpunit.result.cache
 /.phpunit.cache/
 .env
 /keys/
+/logs/
