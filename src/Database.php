@@ -14,7 +14,7 @@ class Database {
 
     public function connect() :void {
         
-        $pdoConfig = "{$_ENV['DB_DRIVER']}:Server={$_ENV['DB_HOST']};Database={$_ENV['DB_NAME']};";
+        $pdoConfig = "{$_ENV['DB_DRIVER']}:Server={$_ENV['DB_HOST']};Database={$_ENV['BASE_SERVER']};";
 
         try {
             $pdo = new PDO($pdoConfig, $_ENV['DB_USER'], $_ENV['DB_PASSWORD']);
