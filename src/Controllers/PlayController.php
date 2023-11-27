@@ -30,6 +30,11 @@ class PlayController {
         $cryptography = new Cryptography;
         $decryptServer = $cryptography->DecryptText($suv);
 
+        if($decryptServer == false) {
+            $response = new Response();
+            return $response->withStatus(500);  
+        }
+
         $server = new Server;
         $server->search($decryptServer);
         $baseUser = $server->baseUser;

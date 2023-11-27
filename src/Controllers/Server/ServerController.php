@@ -17,6 +17,11 @@ class ServerController {
         $cryptography = new Cryptography;
         $decryptServer = $cryptography->DecryptText($suv);
 
+        if($decryptServer == false) {
+            $response = new Response();
+            return $response->withStatus(500);  
+        }
+
         $server = new Server;
 
         if($server->search($decryptServer)) {

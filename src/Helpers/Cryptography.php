@@ -2,6 +2,8 @@
 
 namespace App\Zaptank\Helpers;
 
+use App\Zaptank\Exceptions\CryptographyException;
+
 class Cryptography {
 
     private $privateKeyCrypt;
@@ -38,14 +40,24 @@ class Cryptography {
     }
 
     public function DecryptText(string $message) {
-        $Resultado = $this->safe_b64decode($message);
-        $Text = mb_substr($Resultado, SODIUM_CRYPTO_BOX_NONCEBYTES, null, '8bit');
-        $Nonce = mb_substr($Resultado, 0, SODIUM_CRYPTO_BOX_NONCEBYTES, '8bit');
-        $KeySK = pack('H*', $this->publicKeyCrypt);
-        $KeyPK = pack('H*', $this->privateKeyCrypt);
-        $KeysKP = sodium_crypto_box_keypair_from_secretkey_and_publickey($KeySK, $KeyPK);
-        $TextEcho = sodium_crypto_box_open($Text, $Nonce, $KeysKP);
-        return ($TextEcho ? : '0');
+
+        try{
+            $Resultado = $this->safe_b64decode($message);
+            $Text = mb_substr($Resultado, SODIUM_CRYPTO_BOX_NONCEBYTES, null, '8bit');
+            $Nonce = mb_substr($Resultado, 0, SODIUM_CRYPTO_BOX_NONCEBYTES, '8bit');
+            $KeySK = pack('H*', $this->publicKeyCrypt);
+            $KeyPK = pack('H*', $this->privateKeyCrypt);
+            $KeysKP = sodium_crypto_box_keypair_from_secretkey_and_publickey($KeySK, $KeyPK);
+            $TextEcho = sodium_crypto_box_open($Text, $Nonce, $KeysKP);
+
+            if($TextEcho == false) {
+                return false;
+            } else {
+                return $TextEcho;
+            }            
+        } catch(CryptographyException $e) {
+            echo "Error: " . $e->getMessage();     
+        }
     }  
 }
 
