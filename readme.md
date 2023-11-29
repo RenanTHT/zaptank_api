@@ -88,7 +88,6 @@ _Tempo de expiração_
 LOGIN_EXPIRATION_TIME_IN_SECONDS = 86400
 ```
 
-
 **Limitar requisições**
 
 ```
@@ -96,6 +95,12 @@ INTERVAL_IN_SECONDS_FOR_PASSWORD_RECOVERY = 120
 INTERVAL_IN_SECONDS_FOR_EMAIL_ACTIVATION = 120
 ```
 
+**Desabilitar erros de aplicação**
+
+_Descomentar instrução no arquivo index.php_
+```
+//$app->addErrorMiddleware(false, true, true);
+```
 
 **Links**
 
