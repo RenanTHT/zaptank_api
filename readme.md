@@ -48,7 +48,9 @@ OPENPIX_TOKEN = ''
 ```
 
 **Url solicitada na alteração do status de pagamento**
+```
 PICPAY_CALLBACK_URL = 'https://api.redezaptank.com.br/payment/notification/picpay'
+```
 
 **Keys**
 
