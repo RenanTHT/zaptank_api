@@ -24,14 +24,15 @@ class ensureThatTheCharacterNewNicknameIsValid {
     
         $new_nickname = $_POST['newnick'];
 
-        $specialChars = array(".", ",", "?", "!", "'", "\\", ":", "(", ")", "/", '"', ";", "-", "+", "<", ">", "%", "~", "€", "$", "[", "]", "{", "}", "@", "&", "#", "*", "„");
-        if(strpbrk($new_nickname, implode('', $specialChars))) {
+        $pattern = '/[^' . preg_quote($_ENV['CHARACTERS_ALLOWED_IN_THE_NICKNAME'], '/') . ']/';
+
+        if(preg_match($pattern, $new_nickname)) {
             $body = json_encode([
                 'success' => false,
                 'message' => 'O nome do personagem contém caracteres especiais.',
                 'status_code' => 'invalid_special_characters'
             ]);
-
+        
             $response = new Response();
             $response->getBody()->write($body);
             return $response;
