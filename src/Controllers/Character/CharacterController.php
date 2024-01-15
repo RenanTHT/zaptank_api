@@ -42,8 +42,8 @@ class CharacterController {
         $cryptography = new Cryptography;
         $decryptServer = $cryptography->DecryptText($suv);
 
+        // Caso parâmetro suv for inválido
         if($decryptServer == false) {
-            $response = new Response();
             return $response->withStatus(500);  
         }
 
@@ -90,9 +90,9 @@ class CharacterController {
 
         $cryptography = new Cryptography;
         $decryptServer = $cryptography->DecryptText($suv);
-
+        
+        // Caso parâmetro suv for inválido
         if($decryptServer == false) {
-            $response = new Response();
             return $response->withStatus(500);  
         }
 
