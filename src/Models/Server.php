@@ -17,6 +17,7 @@ class Server extends Model {
     public $questUrl;
     public $maintenance;
     public $localhost;
+    public $season;
 
     public function search($serverId) :bool {
 
@@ -38,6 +39,7 @@ class Server extends Model {
             $this->setMaintenance($serverInfo['Maintenance']);
             $this->setRelease($serverInfo['Release']);
             $this->setIsLocalhost($serverInfo['IsLocalHost']);
+            $this->setSeason($serverInfo['Temporada']);
             return true;
         } else {
             return false;
@@ -60,7 +62,7 @@ class Server extends Model {
         $this->baseTank = $baseTank;
     }
 
-    public function setFlashUrl($flashUrl) {
+    private function setFlashUrl($flashUrl) {
         $this->flashUrl = $flashUrl;
     }
 
@@ -76,11 +78,15 @@ class Server extends Model {
         $this->maintenance = $maintenance;
     }
 
-    public function setRelease($release) {
+    private function setRelease($release) {
         $this->release = $release;
     }
 
-    public function setIsLocalhost($isLocalhost) {
+    private function setIsLocalhost($isLocalhost) {
         $this->localhost = $isLocalhost;
     }
+
+    private function setSeason($season) {
+        $this->season = $season;
+    } 
 }

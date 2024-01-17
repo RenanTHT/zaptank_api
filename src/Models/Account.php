@@ -154,4 +154,14 @@ class Account extends Model {
         $stmt->bindParam(':email', $email);
         $stmt->execute();
     }
+
+    public function updateLastLoginActivityDate(string $email, string $date) :void {
+
+        $conn = $this->db->get();
+
+        $stmt = $conn->prepare("UPDATE {$_ENV['BASE_SERVER']}.dbo.Mem_UserInfo SET LastLoginActivityDate = :date WHERE Email = :email");
+        $stmt->bindParam(':date', $date);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+    } 
 }

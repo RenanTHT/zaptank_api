@@ -47,9 +47,12 @@ class PageController {
             return $response->withStatus(500);  
         }
 
+        $account->updateLastLoginActivityDate($account_email, Date::getDate('d/m/Y H:i:s'));
+
         $server = new Server;
         $server->search($decryptServer);
         $release = $server->release;
+        $season = $server->season;
 
         $alerts = [];
 
@@ -96,7 +99,10 @@ class PageController {
 
         $info = [
             'verified' => boolval($user['VerifiedEmail']),
-            'created_at' => Date::formatDate($user['CreateDate'])
+            'created_at' => Date::formatDate($user['CreateDate']),
+            'server' => [
+                'season' => ($season - 1)
+            ]
         ];
 
         if($user['Opinion'] == 0) {
