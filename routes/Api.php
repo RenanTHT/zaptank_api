@@ -84,6 +84,7 @@ $app->group('/', function(RouteCollectorProxy $group) {
     $group->post('account/email/activation/request', [AccountConfigController::class, 'saveEmailActivationRequest']);
 
     $group->get('character/check/{suv}', [CharacterController::class, 'checkIfCharacterWasCreated']);
+    $group->get('character/details/{suv}', [CharacterController::class, 'getCharacterDetails']);
     $group->post('character/create/{suv}', [CharacterController::class, 'new'])->add(new checkIfCharacterWasCreated)->add(new ensureThatTheCharacterNicknameIsValid);
   
     $group->post('ticket/evaluate/{reference}', [TicketController::class, 'evaluateService']);

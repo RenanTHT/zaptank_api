@@ -78,6 +78,39 @@ class CharacterController {
         return $response;
     }
 
+    public function getCharacterDetails(Request $request, Response $response, array $args) :Response {
+
+        $suv = $args['suv'];
+        $jwt = explode(' ', $request->getHeader('Authorization')[0])[1];
+
+        $token = new Token;
+        $payload = $token->decode($jwt);
+        $account_email = $payload['email'];
+
+        $cryptography = new Cryptography;
+        $decryptServer = $cryptography->DecryptText($suv);
+
+        // Caso parâmetro suv for inválido
+        if($decryptServer == false) {
+            return $response->withStatus(500);  
+        }
+
+        $server = new Server;
+        $server->search($decryptServer);
+        $baseUser = $server->baseUser;
+
+        $character = new Character;
+        $character->search($account_email, $baseUser);
+        
+        $body = json_encode([
+            'character' => [
+                'nickname' => $character->nickName
+            ]
+        ]);
+
+        $response->getBody()->write($body);
+        return $response;
+    }
     
     public function checkIfCharacterWasCreated(Request $request, Response $response, array $args) :Response {
 
